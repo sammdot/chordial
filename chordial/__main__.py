@@ -1,4 +1,5 @@
-from click import command, Choice, Group, option, pass_obj
+from click import command, Choice, option, pass_obj
+from click_default_group import DefaultGroup
 from gunicorn.app.base import BaseApplication
 import logging
 from multiprocessing import cpu_count
@@ -25,16 +26,16 @@ class ChordialApp(BaseApplication):
   def load(self):
     return app
 
-cli = Group("chordial")
+cli = DefaultGroup(default="start", default_if_no_args=True)
 
-@cli.command("run")
+@cli.command("start")
 @option("--port", "-p", type=int, default=3241)
 @option("--workers", "-w", type=int, default=cpu_count() * 2 + 1)
 @option("--log-level", "-l",
   type=Choice(["debug", "info", "warning", "error", "critical"]),
   default=None)
 @pass_obj
-def run(ctx, port, workers, log_level):
+def start(ctx, port, workers, log_level):
   log_level = log_level or ctx.config.LOG_LEVEL.lower()
   log_to_stdout = ctx.config.LOG_TO_STDOUT
   log.setLevel(log_level.upper())
