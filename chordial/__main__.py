@@ -1,11 +1,14 @@
 from click import command, Choice, Group, option, pass_obj
 from gunicorn.app.base import BaseApplication
+import logging
 from multiprocessing import cpu_count
 import os
 
 from chordial import app
 from chordial.config import config_for
-from chordial.utils.logging import log, ChordialGunicornLogger
+from chordial.models import Base
+from chordial.utils.database import connect
+from chordial.utils.logging import log, ChordialLogger, ChordialGunicornLogger
 
 class ChordialApp(BaseApplication):
   def __init__(self, options=None):
@@ -46,6 +49,23 @@ def run(ctx, port, workers, log_level):
     "logger_class": ChordialGunicornLogger,
   }
   ChordialApp(options).run()
+
+@cli.group("db")
+@pass_obj
+def db(ctx):
+  ctx.engine, _ = connect(ctx.config.DATABASE_URL)
+  ChordialLogger.config(
+    logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None)
+
+@db.command("create")
+@pass_obj
+def create_db(ctx):
+  Base.metadata.create_all(ctx.engine)
+
+@db.command("drop")
+@pass_obj
+def drop_db(ctx):
+  Base.metadata.drop_all(ctx.engine)
 
 class Context:
   config = config_for(os.environ.get("CHORDIAL_ENV"))
