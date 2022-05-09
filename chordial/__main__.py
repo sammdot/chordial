@@ -1,4 +1,4 @@
-from click import command, Choice, option, pass_obj
+from click import command, Choice, Group, option, pass_obj
 from gunicorn.app.base import BaseApplication
 from multiprocessing import cpu_count
 import os
@@ -22,7 +22,9 @@ class ChordialApp(BaseApplication):
   def load(self):
     return app
 
-@command("run")
+cli = Group("chordial")
+
+@cli.command("run")
 @option("--port", "-p", type=int, default=3241)
 @option("--workers", "-w", type=int, default=cpu_count() * 2 + 1)
 @option("--log-level", "-l",
@@ -49,4 +51,4 @@ class Context:
   config = config_for(os.environ.get("CHORDIAL_ENV"))
 
 if __name__ == "__main__":
-  run(prog_name="chordial", obj=Context)
+  cli(prog_name="chordial", obj=Context)
