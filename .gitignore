@@ -1,0 +1,8 @@
+.venv
+*.db
+*.log
+*.sh
+*.sql
+
+.DS_Store
+*.sublime-*
