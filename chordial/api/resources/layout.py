@@ -13,7 +13,7 @@ class LayoutResource(Resource):
 
 class LayoutsResource(Resource):
   @params(name=fields.Str())
-  def get(self, name):
+  def get(self, name=None):
     if name:
       if l := Layout.with_short_name(name):
         return redirect(url_for("layout", layout_id=l.id))

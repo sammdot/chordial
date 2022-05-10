@@ -35,6 +35,6 @@ class TheorySchema(BaseSchema):
 
   layout = Nested("LayoutSchema", exclude=("theories",))
   official_dictionary = Nested(
-    "DictionarySchema", exclude=("user", "layout", "entries"))
+    "DictionarySchema", exclude=("user", "layout"))
 
 Theory.schema = TheorySchema()

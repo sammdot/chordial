@@ -1,8 +1,8 @@
 from http import HTTPStatus
-from flask import make_response, request
+from flask import g, make_response, request
 from flask_restful import abort, Resource
 
-from chordial.api.auth import get_user_id, login_required, set_cookies, token_for, unset_cookies
+from chordial.api.auth import login_required, set_cookies, token_for, unset_cookies
 from chordial.models import User
 from chordial.utils.params import fields, json_params
 
@@ -20,7 +20,7 @@ class AuthResource(Resource):
 
   @login_required
   def get(self):
-    if u := User.with_id(get_user_id()):
+    if u := User.with_id(g.id):
       return User.auth_schema.dump(u)
     abort(HTTPStatus.NOT_FOUND)
 

@@ -13,7 +13,7 @@ class TheoryResource(Resource):
 
 class TheoriesResource(Resource):
   @params(name=fields.Str())
-  def get(self, name):
+  def get(self, name=None):
     if name:
       if t := Theory.with_short_name(name):
         return redirect(url_for("theory", theory_id=t.id))

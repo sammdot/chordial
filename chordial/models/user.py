@@ -34,6 +34,10 @@ class User(Base, id_mixin(6)):
     return User.query.options(joinedload(User.dictionaries)).filter_by(username=username).first()
 
   @staticmethod
+  def all():
+    return User.query.all()
+
+  @staticmethod
   def new(username, password):
     u = User(username=username, password=password_hash.hash(password))
     u.save()

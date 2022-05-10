@@ -2,12 +2,10 @@ from http import HTTPStatus
 from flask import g, redirect
 from flask_restful import abort, Resource, url_for
 
-from chordial.api.auth import get_user_id, login_optional
 from chordial.models import Dictionary, User, Visibility
 from chordial.utils.params import fields, params
 
 class DictionaryResource(Resource):
-  @login_optional
   def get(self, dict_id):
     if d := Dictionary.with_id(dict_id):
       if (g.id != d.user_id

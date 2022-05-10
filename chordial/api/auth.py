@@ -4,15 +4,19 @@ from flask_jwt_extended import (
   create_access_token,
   get_jwt,
   get_jwt_identity,
-  jwt_required,
   JWTManager,
   set_access_cookies,
   unset_jwt_cookies,
   verify_jwt_in_request,
 )
+from flask_jwt_extended.exceptions import NoAuthorizationError
+from flask_restful import abort
+from functools import wraps
+from http import HTTPStatus
 
 from chordial.models import User
 from chordial.utils.uid import encode
+
 
 jwt = JWTManager()
 
@@ -44,10 +48,28 @@ def setup_auth(app):
 def token_for(user, claims=None):
   return create_access_token(identity=user.id, additional_claims=claims)
 
-def get_user_id():
-  return get_jwt_identity()
+def login_required(fn):
+  @wraps(fn)
+  def wrapper(*args, **kwargs):
+    try:
+      verify_jwt_in_request()
+      return fn(*args, **kwargs)
+    except NoAuthorizationError:
+      abort(HTTPStatus.UNAUTHORIZED, message="Authorization required")
+  return wrapper
 
-login_required = jwt_required()
-login_optional = jwt_required(optional=True)
+def admin_required(fn):
+  @wraps(fn)
+  def wrapper(*args, **kwargs):
+    try:
+      _, data = verify_jwt_in_request()
+      if data["is_admin"]:
+        return fn(*args, **kwargs)
+      else:
+        abort(HTTPStatus.FORBIDDEN, message="Admin permissions required")
+    except NoAuthorizationError:
+      abort(HTTPStatus.UNAUTHORIZED, message="Authorization required")
+  return wrapper
+
 set_cookies = set_access_cookies
 unset_cookies = unset_jwt_cookies
