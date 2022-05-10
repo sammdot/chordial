@@ -48,7 +48,7 @@ class EntrySchema(BaseSchema):
 class EntryListSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Entry
-    exclude = ("derivation", "mnemonic")
+    exclude = BaseSchema.Meta.exclude + ("derivation", "mnemonic")
 
   steno = Pluck("OutlineSchema", "steno", attribute="outline")
   translation = Pluck("TranslationSchema", "translation")
