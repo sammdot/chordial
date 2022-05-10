@@ -1,5 +1,6 @@
 from click import command, Choice, option, pass_obj
 from click_default_group import DefaultGroup
+import gunicorn
 from gunicorn.app.base import BaseApplication
 import logging
 from multiprocessing import cpu_count
@@ -40,11 +41,13 @@ def start(ctx, port, workers, log_level):
   log_to_stdout = ctx.config.LOG_TO_STDOUT
   log.setLevel(log_level.upper())
 
+  gunicorn.SERVER = ctx.config.SERVER_HEADER
+
   options = {
     "bind": f"0.0.0.0:{port}",
     "workers": workers,
     "loglevel": log_level,
-    "proc_name": ctx.config.PROCESS_NAME,
+    "proc_name": ctx.config.PROGRAM_NAME,
     "accesslog": "-" if log_to_stdout else ctx.config.ACCESS_LOG,
     "errorlog": "-" if log_to_stdout else ctx.config.ERROR_LOG,
     "logger_class": ChordialGunicornLogger,
@@ -63,10 +66,36 @@ def db(ctx):
 def create_db(ctx):
   Base.metadata.create_all(ctx.engine)
 
+@db.command("init")
+def init():
+  from chordial.models import Layout, Theory, User, Dictionary, Outline, Translation, Entry, Visibility
+  from passlib.hash import pbkdf2_sha256 as password_hash
+  l = Layout(short_name="en", display_name="English")
+  t = Theory(short_name="plover", display_name="Plover", layout=l)
+  u = User(username="Jen", password=password_hash.hash("test"), is_admin=True)
+  d = Dictionary(user=u, name="main", display_name="Plover main", layout=l)
+  d2 = Dictionary(user=u, name="second", display_name="Plover second", layout=l, visibility=Visibility.private)
+
+  o = Outline(steno="STKPWHR", layout=l)
+  x = Translation(translation="moo", layout=l, spelling_variant="US")
+  e = Entry(dictionary=d, outline=o, translation=x)
+
+  u2 = User(username="moo", password=password_hash.hash("mroo"))
+  d3 = Dictionary(user=u2, name="test", layout=l, visibility=Visibility.private)
+  
+  lst = [l, t, u, d, d2, o, x, e, u2, d3]
+  [print(i) for i in lst]
+  [i.save() for i in lst]
+
 @db.command("drop")
 @pass_obj
 def drop_db(ctx):
   Base.metadata.drop_all(ctx.engine)
+
+@cli.command("routes")
+def list_routes():
+  for rule in app.url_map.iter_rules():
+    print(rule)
 
 class Context:
   config = config_for(os.environ.get("CHORDIAL_ENV"))

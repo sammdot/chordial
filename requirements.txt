@@ -11,12 +11,16 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.1
 marshmallow==3.15.0
+marshmallow-enum==1.5.1
 marshmallow-sqlalchemy==0.28.0
 packaging==21.3
+passlib==1.7.4
 PyJWT==2.3.0
 pyparsing==3.0.8
 pytz==2022.1
 six==1.16.0
 SQLAlchemy==1.4.36
+SQLAlchemy-Utils==0.38.2
+webargs==8.1.0
 Werkzeug==2.1.2
 zipp==3.8.0

@@ -1,3 +1,24 @@
 from flask_restful import Api
 
+from chordial.api.resources import (
+  AuthResource,
+  DictionaryResource, DictionariesResource,
+  EntryResource, EntriesResource,
+  LayoutResource, LayoutsResource,
+  TheoryResource, TheoriesResource,
+  UserResource, UsersResource,
+)
+
 api = Api(catch_all_404s=True)
+
+api.add_resource(AuthResource, "/auth")
+api.add_resource(DictionaryResource, "/dicts/<uid6:dict_id>", endpoint="dict")
+api.add_resource(DictionariesResource, "/dicts")
+api.add_resource(EntryResource, "/entries/<uid10:entry_id>", endpoint="entry")
+api.add_resource(EntriesResource, "/entries")
+api.add_resource(LayoutResource, "/layouts/<uid4:layout_id>", endpoint="layout")
+api.add_resource(LayoutsResource, "/layouts")
+api.add_resource(TheoryResource, "/theories/<uid4:theory_id>", endpoint="theory")
+api.add_resource(TheoriesResource, "/theories")
+api.add_resource(UserResource, "/users/<uid6:user_id>", endpoint="user")
+api.add_resource(UsersResource, "/users")
