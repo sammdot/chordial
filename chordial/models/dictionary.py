@@ -40,7 +40,7 @@ class Dictionary(Base, id_mixin(6)):
     if u := User.with_username(username):
       return Dictionary.query.filter_by(user_id=u.id, name=name).first()
 
-class DictionaryShortSchema(BaseSchema):
+class DictionarySchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Dictionary
 
@@ -49,8 +49,8 @@ class DictionaryShortSchema(BaseSchema):
   user = Nested("UserSchema", exclude=("dictionaries",))
   theory = Nested("TheorySchema", exclude=("official_dictionary", "layout"))
 
-class DictionarySchema(DictionaryShortSchema):
+class DictionaryFullSchema(DictionarySchema):
   entries = Nested("EntryListSchema", many=True)
 
 Dictionary.schema = DictionarySchema()
-Dictionary.short_schema = DictionaryShortSchema()
+Dictionary.full_schema = DictionaryFullSchema()

@@ -15,9 +15,9 @@ class DictionaryResource(Resource):
           and not g.is_admin):
         abort(HTTPStatus.NOT_FOUND)
       if g.is_admin:
-        return Dictionary.schema.dump(d)
+        return Dictionary.full_schema.dump(d)
       else:
-        return Dictionary.short_schema.dump(d)
+        return Dictionary.schema.dump(d)
     abort(HTTPStatus.NOT_FOUND)
 
 class DictionariesResource(Resource):
