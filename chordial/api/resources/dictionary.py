@@ -14,7 +14,10 @@ class DictionaryResource(Resource):
           and d.visibility == Visibility.private
           and not g.is_admin):
         abort(HTTPStatus.NOT_FOUND)
-      return Dictionary.schema.dump(d)
+      if g.is_admin:
+        return Dictionary.schema.dump(d)
+      else:
+        return Dictionary.short_schema.dump(d)
     abort(HTTPStatus.NOT_FOUND)
 
 class DictionariesResource(Resource):

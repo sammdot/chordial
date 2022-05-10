@@ -12,8 +12,10 @@ class Theory(Base, id_mixin(4)):
   short_name = Column(String, nullable=False, unique=True)
   display_name = Column(String, nullable=False, unique=True)
   layout_id = Column(Integer, ForeignKey("layouts.id"), nullable=False)
+  official_dictionary_id = Column(Integer, ForeignKey("dictionaries.id"))
 
   layout = relationship("Layout", backref="theories")
+  official_dictionary = relationship("Dictionary")
 
   @staticmethod
   def with_id(id: int):
@@ -32,5 +34,7 @@ class TheorySchema(BaseSchema):
     model = Theory
 
   layout = Nested("LayoutSchema", exclude=("theories",))
+  official_dictionary = Nested(
+    "DictionarySchema", exclude=("user", "layout", "entries"))
 
 Theory.schema = TheorySchema()

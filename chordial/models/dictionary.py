@@ -1,6 +1,6 @@
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
 
@@ -18,6 +18,7 @@ class Dictionary(Base, id_mixin(6)):
   layout_id = Column(String, ForeignKey("layouts.id"), nullable=False)
   user_id = Column(String, ForeignKey("users.id"), nullable=False)
   visibility = Column(Enum(Visibility), default=Visibility.public)
+  proprietary = Column(Boolean, default=False)
 
   layout = relationship("Layout")
   user = relationship("User", backref="dictionaries")
@@ -39,13 +40,17 @@ class Dictionary(Base, id_mixin(6)):
     if u := User.with_username(username):
       return Dictionary.query.filter_by(user_id=u.id, name=name).first()
 
-class DictionarySchema(BaseSchema):
+class DictionaryShortSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Dictionary
 
   visibility = EnumField(Visibility)
   layout = Nested("LayoutSchema", exclude=("theories",))
   user = Nested("UserSchema", exclude=("dictionaries",))
+  theory = Nested("TheorySchema", exclude=("official_dictionary", "layout"))
+
+class DictionarySchema(DictionaryShortSchema):
   entries = Nested("EntryListSchema", many=True)
 
 Dictionary.schema = DictionarySchema()
+Dictionary.short_schema = DictionaryShortSchema()
