@@ -1,5 +1,5 @@
 from chordial.models.base import Base
-from chordial.models.enums import Visibility
+from chordial.models.enums import DerivationType, EntryStatus, Visibility
 
 from chordial.models.dictionary import Dictionary
 from chordial.models.entry import Entry

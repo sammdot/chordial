@@ -49,13 +49,12 @@ class UserAuthSchema(BaseSchema):
 
 class UserFullSchema(UserAuthSchema):
   dictionaries = Nested(
-    "DictionarySchema",
-    many=True, exclude=("entries", "user"))
+    "DictionarySchema", many=True, exclude=("user",))
 
 class UserSchema(UserAuthSchema):
   dictionaries = Nested(
     "DictionarySchema", attribute="public_dictionaries",
-    many=True, exclude=("entries", "user"))
+    many=True, exclude=("user",))
 
 User.schema = UserSchema()
 User.full_schema = UserFullSchema()

@@ -1,10 +1,12 @@
 from marshmallow.fields import Pluck
+from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from chordial.models.base import Base, BaseSchema
+from chordial.models.enums import DerivationType, EntryStatus
 from chordial.models.dictionary import Dictionary
 from chordial.models.outline import Outline
 from chordial.models.translation import Translation
@@ -21,6 +23,10 @@ class Entry(Base, id_mixin(10)):
   outline = relationship("Outline", backref="entries")
   translation = relationship("Translation", backref="entries")
 
+  status = Column(Enum(EntryStatus), default=EntryStatus.unknown)
+  derivation = Column(Enum(DerivationType), default=DerivationType.unknown)
+  mnemonic = Column(String)
+
   __table_args__ = (
     UniqueConstraint(
       "dictionary_id", "outline_id", name="unique_outline_per_dictionary"),
@@ -36,12 +42,17 @@ class EntrySchema(BaseSchema):
 
   outline = Nested("OutlineSchema")
   translation = Nested("TranslationSchema")
+  status = EnumField(EntryStatus)
+  derivation = EnumField(DerivationType)
 
 class EntryListSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Entry
+    exclude = ("derivation", "mnemonic")
 
   steno = Pluck("OutlineSchema", "steno", attribute="outline")
   translation = Pluck("TranslationSchema", "translation")
+  status = EnumField(EntryStatus)
 
 Entry.schema = EntrySchema()
+Entry.list_schema = EntryListSchema()
