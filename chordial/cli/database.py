@@ -4,15 +4,18 @@ import sqlalchemy
 import sys
 
 from chordial.models import Base
+from chordial.utils.console import print_table
 from chordial.utils.database import connect
 from chordial.utils.logging import ChordialLogger
 
 @group("db")
+@option("--quiet/--no-quiet", "-q")
 @pass_obj
-def db(ctx):
+def db(ctx, quiet):
   ctx.engine, _ = connect(ctx.config.DATABASE_URL)
-  ChordialLogger.config(
-    logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None)
+  if not quiet:
+    ChordialLogger.config(
+      logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None)
 
 @db.command("create")
 @pass_obj
@@ -24,7 +27,12 @@ def create_db(ctx):
 @pass_obj
 def query_db(ctx, file):
   query = sqlalchemy.text(file.read())
-  ctx.engine.execute(query)
+  with ctx.engine.connect() as conn:
+    rows = conn.execute(query).all()
+    if rows:
+      print_table(rows[0]._fields, rows)
+    else:
+      print("No rows.")
 
 @db.command("drop")
 @pass_obj
