@@ -1,7 +1,7 @@
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Boolean, Column, Enum, ForeignKey, String
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import backref, joinedload, relationship
 from sqlalchemy.schema import UniqueConstraint
 
 from chordial.models.base import Base, BaseSchema
@@ -36,12 +36,20 @@ class Dictionary(Base, IdMixin(6), TimestampMixin):
 
   @staticmethod
   def with_id(id: int):
-    return Dictionary.query.filter_by(id=id).first()
+    return Dictionary.query.options(joinedload(Dictionary.entries)).filter_by(id=id).first()
 
   @staticmethod
   def with_name(username: str, name: str):
     if u := User.with_username(username):
-      return Dictionary.query.filter_by(user_id=u.id, name=name).first()
+      return (
+        Dictionary.query.filter(Dictionary.user_id == u.id)
+          .filter(Dictionary.name.ilike(f"%{name}%")).first())
+
+  def to_json(self):
+    return {
+      entry.outline.steno: entry.translation.translation
+      for entry in self.entries
+    }
 
 class DictionarySchema(BaseSchema):
   class Meta(BaseSchema.Meta):

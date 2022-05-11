@@ -44,11 +44,17 @@ class User(Base, IdMixin(6), TimestampMixin):
 
   @staticmethod
   def with_id(id: int):
-    return User.query.options(joinedload(User.dictionaries)).filter_by(id=id).first()
+    return (
+      User.query.options(joinedload(User.dictionaries))
+        .filter_by(id=id).first()
+    )
 
   @staticmethod
   def with_username(username: str):
-    return User.query.options(joinedload(User.dictionaries)).filter_by(username=username).first()
+    return (
+      User.query.options(joinedload(User.dictionaries))
+        .filter(User.username.ilike(f"%{username}%")).first()
+    )
 
   @staticmethod
   def all():

@@ -20,3 +20,6 @@ class DerivationType(Enum):
   semi_phonetic = 2
   skeletal = 3
   shape_based = 4
+
+class DictionaryFormat(Enum):
+  json = 0
