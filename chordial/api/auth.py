@@ -30,7 +30,7 @@ def setup_auth(app):
       g.id = data["sub"]
       g.uid = encode(g.id)
       g.user = User.with_id(g.id)
-      g.is_admin = data["is_admin"]
+      g.is_admin = data.get("is_admin")
 
   @app.after_request
   def refresh_expiring_jwts(response):
@@ -63,7 +63,7 @@ def admin_required(fn):
   def wrapper(*args, **kwargs):
     try:
       _, data = verify_jwt_in_request()
-      if data["is_admin"]:
+      if data.get("is_admin"):
         return fn(*args, **kwargs)
       else:
         abort(HTTPStatus.FORBIDDEN, message="Admin permissions required")

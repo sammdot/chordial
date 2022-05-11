@@ -6,7 +6,7 @@ from chordial.api.resources import (
   EntryResource, EntriesResource,
   LayoutResource, LayoutsResource,
   TheoryResource, TheoriesResource,
-  UserResource, UsersResource,
+  UserResource, UsersResource, UserVerifyResource,
 )
 
 api = Api(catch_all_404s=True)
@@ -21,4 +21,5 @@ api.add_resource(LayoutsResource, "/layouts")
 api.add_resource(TheoryResource, "/theories/<uid4:theory_id>", endpoint="theory")
 api.add_resource(TheoriesResource, "/theories")
 api.add_resource(UserResource, "/users/<uid6:user_id>", endpoint="user")
+api.add_resource(UserVerifyResource, "/users/<uid6:user_id>/verify")
 api.add_resource(UsersResource, "/users")

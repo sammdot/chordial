@@ -3,4 +3,4 @@ from chordial.api.resources.dictionary import DictionaryResource, DictionariesRe
 from chordial.api.resources.entry import EntryResource, EntriesResource
 from chordial.api.resources.layout import LayoutResource, LayoutsResource
 from chordial.api.resources.theory import TheoryResource, TheoriesResource
-from chordial.api.resources.user import UserResource, UsersResource
+from chordial.api.resources.user import UserResource, UsersResource, UserVerifyResource

@@ -2,8 +2,9 @@ from http import HTTPStatus
 from flask import redirect
 from flask_restful import abort, Resource, url_for
 
-from chordial.models import Theory
-from chordial.utils.params import fields, params
+from chordial.api.auth import admin_required
+from chordial.models import Layout, Theory
+from chordial.utils.params import fields, json_params, params
 
 class TheoryResource(Resource):
   def get(self, theory_id):
@@ -19,3 +20,24 @@ class TheoriesResource(Resource):
         return redirect(url_for("theory", theory_id=t.id))
       abort(HTTPStatus.NOT_FOUND)
     return [Theory.schema.dump(t) for t in Theory.all()]
+
+  @admin_required
+  @json_params(
+    short_name=fields.Str(required=True),
+    layout=fields.Str(required=True),
+    display_name=fields.Str(),
+  )
+  def post(self, short_name, layout, display_name=None):
+    if t := Theory.with_short_name(short_name):
+      abort(HTTPStatus.BAD_REQUEST,
+        message=f"Theory {short_name} already exists")
+    if l := Layout.with_short_name(layout):
+      t = Theory(
+        short_name=short_name,
+        display_name=display_name,
+        layout=l,
+      )
+      t.save()
+      return Theory.schema.dump(t)
+    else:
+      abort(HTTPStatus.NOT_FOUND, message=f"Layout {layout} does not exist")

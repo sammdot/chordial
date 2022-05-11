@@ -20,6 +20,8 @@ def render_for_console(item, column_name):
     if column_name == "id" or column_name.endswith("_id"):
       return f"[magenta]{replace_initial_zeros(encode(item, 10))}[/magenta]"
     return str(item)
+  elif isinstance(item, memoryview) and "password" in column_name:
+    return "[grey78]<encrypted>[/grey78]"
   return item
 
 def print_table(column_names, rows):
