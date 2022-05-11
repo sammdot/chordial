@@ -1,5 +1,6 @@
-from sqlalchemy import BigInteger, Column, String
+from sqlalchemy import BigInteger, Column, DateTime, String
 
+from chordial.utils.datetime import now
 from chordial.utils.uid import encode, generate_id
 
 def id_mixin(length: int):
@@ -22,3 +23,9 @@ def id_mixin(length: int):
       return self.short_name
 
   return IdMixin
+
+class CreatedTimeMixin:
+  created_time = Column(DateTime(timezone=True), default=now)
+
+class TimestampMixin(CreatedTimeMixin):
+  updated_time = Column(DateTime(timezone=True), default=now, onupdate=now)

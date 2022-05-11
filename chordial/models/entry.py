@@ -10,9 +10,9 @@ from chordial.models.enums import DerivationType, EntryStatus
 from chordial.models.dictionary import Dictionary
 from chordial.models.outline import Outline
 from chordial.models.translation import Translation
-from chordial.models.mixins import id_mixin
+from chordial.models.mixins import CreatedTimeMixin, id_mixin
 
-class Entry(Base, id_mixin(10)):
+class Entry(Base, id_mixin(10), CreatedTimeMixin):
   __tablename__ = "entries"
 
   dictionary_id = Column(BigInteger,
