@@ -20,7 +20,7 @@ class User(Base, IdMixin(6), TimestampMixin):
   email_verify_token = Column(String, default=generate_verify_token)
   is_admin = Column(Boolean, default=False)
   is_system = Column(Boolean, default=False)
-  password = Column(Password(schemes=["pbkdf2_sha512"]), nullable=False)
+  password = Column(Password(schemes=["pbkdf2_sha512"]))
 
   @property
   def public_dictionaries(self):
@@ -28,9 +28,11 @@ class User(Base, IdMixin(6), TimestampMixin):
 
   __table_args__ = (
     CheckConstraint(
-      "(email_verified AND email_verify_token IS NULL) OR "
-      "(NOT email_verified AND email_verify_token IS NOT NULL)",
+      "email_verified OR email_verify_token IS NOT NULL",
       name="verify_token_check"),
+    CheckConstraint(
+      "is_system OR password IS NOT NULL",
+      name="non_system_password_check"),
   )
 
   @property
