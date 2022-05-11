@@ -1,10 +1,12 @@
-from click import command, Choice, option, pass_obj
+from click import Choice, File, option, pass_obj
 from click_default_group import DefaultGroup
 import gunicorn
 from gunicorn.app.base import BaseApplication
 import logging
 from multiprocessing import cpu_count
 import os
+import sqlalchemy
+import sys
 
 from chordial import app
 from chordial.config import config_for
@@ -65,6 +67,13 @@ def db(ctx):
 @pass_obj
 def create_db(ctx):
   Base.metadata.create_all(ctx.engine)
+
+@db.command("query")
+@option("--file", "-f", type=File("r"), default=sys.stdin)
+@pass_obj
+def query_db(ctx, file):
+  query = sqlalchemy.text(file.read())
+  ctx.engine.execute(query)
 
 @db.command("drop")
 @pass_obj

@@ -1,4 +1,5 @@
 import random
+import secrets
 import string
 from werkzeug.routing import BaseConverter, ValidationError
 
@@ -29,3 +30,8 @@ def uid_converter(length: int):
       return encode(value, length)
 
   return UniqueIdConverter
+
+VERIFY_TOKEN_LENGTH = 16
+
+def generate_verify_token():
+  return secrets.token_urlsafe(VERIFY_TOKEN_LENGTH)
