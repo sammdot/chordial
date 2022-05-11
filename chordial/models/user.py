@@ -1,24 +1,23 @@
 from marshmallow import fields
 from marshmallow_sqlalchemy.fields import Nested
-from passlib.hash import pbkdf2_sha256 as password_hash
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import joinedload
-from sqlalchemy_utils import EmailType, PasswordType
+from sqlalchemy_utils import EmailType as Email, PasswordType as Password
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.enums import Visibility
-from chordial.models.mixins import id_mixin, TimestampMixin
+from chordial.models.mixins import IdMixin, TimestampMixin
 
-class User(Base, id_mixin(6), TimestampMixin):
+class User(Base, IdMixin(6), TimestampMixin):
   __tablename__ = "users"
 
   username = Column(String, nullable=False, unique=True)
   display_name = Column(String)
-  email = Column(EmailType, nullable=False)
+  email = Column(Email, nullable=False)
   email_verified = Column(Boolean, default=False)
   is_admin = Column(Boolean, default=False)
   is_system = Column(Boolean, default=False)
-  password = Column(PasswordType(schemes=["pbkdf2_sha512"]), nullable=False)
+  password = Column(Password(schemes=["pbkdf2_sha512"]), nullable=False)
 
   @property
   def public_dictionaries(self):

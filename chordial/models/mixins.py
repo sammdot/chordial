@@ -3,7 +3,7 @@ from sqlalchemy import BigInteger, Column, DateTime, String
 from chordial.utils.datetime import now
 from chordial.utils.uid import encode, generate_id
 
-def id_mixin(length: int):
+def IdMixin(length: int):
   class IdMixin:
     id = Column(BigInteger, primary_key=True, default=lambda: generate_id(length))
 

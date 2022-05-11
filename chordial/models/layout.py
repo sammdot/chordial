@@ -2,9 +2,9 @@ from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import Column, String
 
 from chordial.models.base import Base, BaseSchema
-from chordial.models.mixins import id_mixin
+from chordial.models.mixins import IdMixin
 
-class Layout(Base, id_mixin(4)):
+class Layout(Base, IdMixin(4)):
   __tablename__ = "layouts"
 
   short_name = Column(String, nullable=False, unique=True)

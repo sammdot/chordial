@@ -4,9 +4,9 @@ from sqlalchemy.orm import relationship
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.layout import Layout
-from chordial.models.mixins import id_mixin
+from chordial.models.mixins import IdMixin
 
-class Theory(Base, id_mixin(4)):
+class Theory(Base, IdMixin(4)):
   __tablename__ = "theories"
 
   short_name = Column(String, nullable=False, unique=True)

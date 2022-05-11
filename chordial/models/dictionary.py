@@ -1,16 +1,16 @@
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Boolean, Column, Enum, ForeignKey, String
-from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import UniqueConstraint
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.enums import Visibility
 from chordial.models.layout import Layout
-from chordial.models.mixins import id_mixin, TimestampMixin
+from chordial.models.mixins import IdMixin, TimestampMixin
 from chordial.models.user import User
 
-class Dictionary(Base, id_mixin(6), TimestampMixin):
+class Dictionary(Base, IdMixin(6), TimestampMixin):
   __tablename__ = "dictionaries"
 
   name = Column(String, nullable=False)

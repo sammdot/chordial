@@ -2,17 +2,17 @@ from marshmallow.fields import Pluck
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Column, Enum, ForeignKey, String
-from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import UniqueConstraint
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.enums import DerivationType, EntryStatus
 from chordial.models.dictionary import Dictionary
+from chordial.models.mixins import CreatedTimeMixin, IdMixin
 from chordial.models.outline import Outline
 from chordial.models.translation import Translation
-from chordial.models.mixins import CreatedTimeMixin, id_mixin
 
-class Entry(Base, id_mixin(10), CreatedTimeMixin):
+class Entry(Base, IdMixin(10), CreatedTimeMixin):
   __tablename__ = "entries"
 
   dictionary_id = Column(BigInteger,

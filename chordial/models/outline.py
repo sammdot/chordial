@@ -1,12 +1,12 @@
 from sqlalchemy import BigInteger, Column, ForeignKey, String
-from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.schema import UniqueConstraint
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.layout import Layout
-from chordial.models.mixins import id_mixin
+from chordial.models.mixins import IdMixin
 
-class Outline(Base, id_mixin(8)):
+class Outline(Base, IdMixin(8)):
   __tablename__ = "outlines"
 
   layout_id = Column(BigInteger,

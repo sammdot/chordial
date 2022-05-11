@@ -10,7 +10,7 @@ class AuthResource(Resource):
   @json_params(username=fields.Str(required=True), password=fields.Str(required=True))
   def post(self, username, password):
     if user := User.with_username(username):
-      if user.verify_password(password):
+      if user.password == password:
         claims = {"is_admin": True} if user.is_admin else None
         token = token_for(user, claims=claims)
         res = make_response({"access_token": token})
