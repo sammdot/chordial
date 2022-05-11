@@ -1,4 +1,4 @@
-from click import group, File, option, pass_obj
+from click import argument, group, File, option, pass_obj
 import logging
 import sqlalchemy
 import sys
@@ -9,11 +9,11 @@ from chordial.utils.database import connect
 from chordial.utils.logging import ChordialLogger
 
 @group("db")
-@option("--quiet/--no-quiet", "-q")
+@option("--verbose/--no-verbose", "-v")
 @pass_obj
-def db(ctx, quiet):
+def db(ctx, verbose):
   ctx.engine, _ = connect(ctx.config.DATABASE_URL)
-  if not quiet:
+  if verbose:
     ChordialLogger.config(
       logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None)
 
@@ -24,15 +24,23 @@ def create_db(ctx):
 
 @db.command("query")
 @option("--file", "-f", type=File("r"), default=sys.stdin)
+@argument("query", type=str, required=False)
 @pass_obj
-def query_db(ctx, file):
-  query = sqlalchemy.text(file.read())
+def query_db(ctx, file, query=None):
+  if query is None:
+    query = sqlalchemy.text(file.read())
   with ctx.engine.connect() as conn:
-    rows = conn.execute(query).all()
-    if rows:
-      print_table(rows[0]._fields, rows)
+    cur = conn.execute(query)
+    if cur.returns_rows:
+      rows = cur.all()
+      if rows:
+        print_table(rows[0]._fields, rows)
+        print(f"{len(rows)} row{'' if len(rows) == 1 else 's'} returned.")
+      else:
+        print("0 rows returned.")
     else:
-      print("No rows.")
+      rows = cur.rowcount
+      print(f"{rows} row{'' if rows == 1 else 's'} affected.")
 
 @db.command("drop")
 @pass_obj
