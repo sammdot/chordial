@@ -1,8 +1,8 @@
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, Boolean, Column, Enum, ForeignKey, String
 from sqlalchemy.schema import UniqueConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.enums import Visibility
@@ -15,13 +15,16 @@ class Dictionary(Base, id_mixin(6)):
 
   name = Column(String, nullable=False)
   display_name = Column(String)
-  layout_id = Column(String, ForeignKey("layouts.id"), nullable=False)
-  user_id = Column(String, ForeignKey("users.id"), nullable=False)
+  layout_id = Column(BigInteger,
+    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
+  user_id = Column(BigInteger,
+    ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
   visibility = Column(Enum(Visibility), default=Visibility.public)
   proprietary = Column(Boolean, default=False)
 
   layout = relationship("Layout")
-  user = relationship("User", backref="dictionaries")
+  user = relationship("User", backref=backref(
+    "dictionaries", cascade="all, delete-orphan", passive_deletes=True))
 
   __table_args__ = (
     UniqueConstraint("user_id", "name", name="unique_per_user"),

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, Column, ForeignKey, String
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
 
@@ -9,7 +9,8 @@ from chordial.models.mixins import id_mixin
 class Outline(Base, id_mixin(8)):
   __tablename__ = "outlines"
 
-  layout_id = Column(Integer, ForeignKey("layouts.id"), nullable=False)
+  layout_id = Column(BigInteger,
+    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
   steno = Column(String, nullable=False)
 
   layout = relationship("Layout")

@@ -1,5 +1,5 @@
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, String
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.mixins import id_mixin

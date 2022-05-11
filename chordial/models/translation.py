@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, Column, ForeignKey, String
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.orm import relationship
 
@@ -8,7 +8,8 @@ from chordial.models.mixins import id_mixin
 class Translation(Base, id_mixin(8)):
   __tablename__ = "translations"
 
-  layout_id = Column(Integer, ForeignKey("layouts.id"), nullable=False)
+  layout_id = Column(BigInteger,
+    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
   translation = Column(String, nullable=False)
   spelling_variant = Column(String)
 

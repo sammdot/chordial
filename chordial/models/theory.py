@@ -1,5 +1,5 @@
 from marshmallow_sqlalchemy.fields import Nested
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import BigInteger, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from chordial.models.base import Base, BaseSchema
@@ -11,8 +11,10 @@ class Theory(Base, id_mixin(4)):
 
   short_name = Column(String, nullable=False, unique=True)
   display_name = Column(String, nullable=False, unique=True)
-  layout_id = Column(Integer, ForeignKey("layouts.id"), nullable=False)
-  official_dictionary_id = Column(Integer, ForeignKey("dictionaries.id"))
+  layout_id = Column(BigInteger,
+    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
+  official_dictionary_id = Column(BigInteger,
+    ForeignKey("dictionaries.id", ondelete="SET NULL"))
 
   layout = relationship("Layout", backref="theories")
   official_dictionary = relationship("Dictionary")
