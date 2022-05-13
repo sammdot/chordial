@@ -23,6 +23,10 @@ class Outline(Base, IdMixin(8)):
   def repr_label(self):
     return self.steno
 
+  @staticmethod
+  def with_steno(steno, layout):
+    return Outline.query.filter_by(layout=layout, steno=steno).first()
+
 class OutlineSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Outline

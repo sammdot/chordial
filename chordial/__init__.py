@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 import os
 
 from chordial.api import api
@@ -15,6 +16,7 @@ def create_app(env):
     app.url_map.converters[f"uid{length}"] = uid_converter(length)
 
   api.init_app(app)
+  CORS(app)
   setup_database(app)
   jwt.init_app(app)
   setup_auth(app)

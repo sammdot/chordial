@@ -1,9 +1,23 @@
 from datetime import datetime
+from functools import wraps
 import re
 from rich.console import Console
+from rich.progress import BarColumn, Progress, TaskProgressColumn, TextColumn
 from rich.table import Table
 
 from chordial.utils.uid import encode
+
+PROGRESS_COLUMNS = [
+  TextColumn("[progress.description]{task.description} ", justify="right"),
+  BarColumn(),
+  TaskProgressColumn(
+    " [progress.percentage]{task.completed:>9,} / {task.total:>9,}",
+    "",
+    justify="right")
+]
+
+def ProgressBar():
+  return Progress(*PROGRESS_COLUMNS)
 
 INITIAL_ZEROS = re.compile("^(0+)")
 def replace_initial_zeros(uid):
@@ -33,3 +47,9 @@ def print_table(column_names, rows):
       for field, col in zip(row, column_names)))
   console = Console()
   console.print(table)
+
+def click_callback(fn):
+  @wraps(fn)
+  def wrapper(_, __, s):
+    return fn(s)
+  return wrapper

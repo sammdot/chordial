@@ -13,3 +13,5 @@ from chordial.models.outline import Outline
 from chordial.models.theory import Theory
 from chordial.models.translation import Translation
 from chordial.models.user import User
+
+from chordial.models.dict_import import import_steno_dictionary

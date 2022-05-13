@@ -24,6 +24,10 @@ class Translation(Base, IdMixin(8)):
   def repr_label(self):
     return f"'{self.translation}'"
 
+  @staticmethod
+  def with_text(text, layout):
+    return Translation.query.filter_by(layout=layout, translation=text).first()
+
 class TranslationSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Translation

@@ -38,6 +38,7 @@ def start(ctx, port, workers, log_level):
 
   options = {
     "bind": f"0.0.0.0:{port}",
+    "reload": ctx.config.DEBUG,
     "workers": workers,
     "loglevel": log_level,
     "proc_name": ctx.config.PROGRAM_NAME,

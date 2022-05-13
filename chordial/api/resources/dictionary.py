@@ -31,10 +31,7 @@ class DictionaryResource(Resource):
         else:
           return d.to_json()
       elif format is None:
-        if should_hide_entries:
-          return Dictionary.schema.dump(d)
-        else:
-          return Dictionary.full_schema.dump(d)
+        return Dictionary.schema.dump(d)
       else:
         abort(HTTPStatus.BAD_REQUEST, message=f"Unrecognized format {format}")
     abort(HTTPStatus.NOT_FOUND)
@@ -54,9 +51,7 @@ class DictionaryResource(Resource):
       if not dic:
         abort(HTTPStatus.BAD_REQUEST, message=f"Invalid JSON")
 
-      # TODO: Implement dictionary import
-      abort(HTTPStatus.INTERNAL_SERVER_ERROR,
-        message=f"Dictionary import not yet implemented")
+      return import_steno_dictionary(dic, d)
     abort(HTTPStatus.NOT_FOUND)
 
 class DictionariesResource(Resource):

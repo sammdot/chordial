@@ -40,6 +40,20 @@ class Entry(Base, IdMixin(10), CreatedTimeMixin):
   def repr_label(self):
     return f"{self.outline.repr_label} => {self.translation.repr_label}"
 
+  @staticmethod
+  def with_steno(steno, dic):
+    return (
+      Entry.query.join(Entry.outline).filter(Entry.dictionary == dic)
+        .filter(Outline.steno == steno).first()
+    )
+
+  @staticmethod
+  def with_translation(text, dic):
+    return (
+      Entry.query.join(Entry.translation).filter(Entry.dictionary == dic)
+        .filter(Translation.text == text).all()
+    )
+
 class EntrySchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Entry
