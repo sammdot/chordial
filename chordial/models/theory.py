@@ -17,7 +17,6 @@ class Theory(Base, IdMixin(4)):
     ForeignKey("dictionaries.id", ondelete="SET NULL"))
 
   layout = relationship("Layout", backref="theories")
-  official_dictionary = relationship("Dictionary")
 
   @staticmethod
   def with_id(id: int):
@@ -37,6 +36,6 @@ class TheorySchema(BaseSchema):
 
   layout = Nested("LayoutSchema", exclude=("theories",))
   official_dictionary = Nested(
-    "DictionarySchema", exclude=("user", "layout"))
+    "DictionarySchema", exclude=("user", "layout", "theory"))
 
 Theory.schema = TheorySchema()

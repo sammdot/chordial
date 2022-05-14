@@ -19,6 +19,7 @@ class DictionaryResource(Resource):
   @params(format=EnumField(DictionaryFormat))
   def get(self, dict_id, format=None):
     if d := Dictionary.with_id(dict_id):
+      print(d.theory)
       if (g.id != d.user_id
           and d.visibility == Visibility.private
           and not g.is_admin):

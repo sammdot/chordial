@@ -8,6 +8,7 @@ from chordial.models.base import Base, BaseSchema
 from chordial.models.enums import Visibility
 from chordial.models.layout import Layout
 from chordial.models.mixins import IdMixin, TimestampMixin
+from chordial.models.theory import Theory
 from chordial.models.user import User
 
 class Dictionary(Base, IdMixin(6), TimestampMixin):
@@ -25,6 +26,7 @@ class Dictionary(Base, IdMixin(6), TimestampMixin):
   layout = relationship("Layout")
   user = relationship("User", backref=backref(
     "dictionaries", cascade="all, delete-orphan", passive_deletes=True))
+  theory = relationship("Theory", backref="official_dictionary", uselist=False)
 
   __table_args__ = (
     UniqueConstraint("user_id", "name", name="unique_per_user"),

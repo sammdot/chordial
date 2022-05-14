@@ -18,8 +18,10 @@ class DerivationType(Enum):
   unknown = 0
   phonetic = 1
   semi_phonetic = 2
-  skeletal = 3
-  shape_based = 4
+  orthographic = 3
+  skeletal = 4
+  shape_based = 5
+  phrase = 99
 
 class DictionaryFormat(Enum):
   json = 0
