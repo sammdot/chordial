@@ -5,8 +5,10 @@ import { Column, useTable, usePagination } from "react-table"
 
 import { Dictionary, Entry, EntryResults } from "src/api/models"
 import DictInfo from "src/components/DictInfo"
+import EntryList from "src/components/EntryList"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
+import ShortDate from "src/components/ShortDate"
 import { useApiQuery } from "src/utils/hooks"
 
 type Params = {
@@ -61,20 +63,19 @@ export default function DictDetail() {
     ],
     []
   )
-  const { getTableProps, headerGroups, prepareRow, page, pageCount, gotoPage } =
-    useTable(
-      {
-        columns,
-        data: entriesData?.entries || [],
-        initialState: {
-          pageIndex: pageId,
-          pageSize: entryCount,
-        },
-        pageCount: data ? Math.ceil(data.num_entries / entryCount) : -1,
-        manualPagination: true,
+  const { headerGroups, prepareRow, page, pageCount, gotoPage } = useTable(
+    {
+      columns,
+      data: entriesData?.entries || [],
+      initialState: {
+        pageIndex: pageId,
+        pageSize: entryCount,
       },
-      usePagination
-    )
+      pageCount: data ? Math.ceil(data.num_entries / entryCount) : -1,
+      manualPagination: true,
+    },
+    usePagination
+  )
 
   const goto = (page: number) => {
     setPageId(page)
@@ -89,7 +90,7 @@ export default function DictDetail() {
       {entriesLoading ? (
         <Loader />
       ) : entriesData ? (
-        entriesData.entries ? (
+        entriesData.entries.length ? (
           <>
             <ReactPaginate
               breakLabel="•••"
@@ -110,46 +111,30 @@ export default function DictDetail() {
               breakLinkClassName="px-3 py-2.5 leading-6"
               nextLinkClassName="px-3 py-2.5 leading-6"
               disabledClassName="text-gray-400 hover:bg-white"
+              renderOnZeroPageCount={() => null}
             />
-            <div {...getTableProps()} role="table" className="mt-4">
-              <div className="hidden sm:grid">
-                {headerGroups.map((headerGroup, i) => (
-                  <div className="grid grid-cols-2 my-2" key={`group-${i}`}>
-                    {headerGroup.headers.map((column, i) => (
-                      <div
-                        className="font-semibold text-left text-sm uppercase text-gray-500"
-                        key={`column-${i}`}
-                      >
-                        {column.render("Header")}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-              <div>
-                {page.map((row) => {
-                  prepareRow(row)
-                  return (
-                    <div
-                      {...row.getRowProps()}
-                      className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
-                      key={row.original.outline.steno}
-                    >
-                      {row.cells.map((cell, i) => {
-                        return (
-                          <div {...cell.getCellProps()} key={`cell-${i}`}>
-                            {cell.render("Cell")}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+            <EntryList className="mt-6">
+              <EntryList.Header
+                className="hidden sm:grid sm:grid-cols-2 my-2"
+                cellClassName="font-semibold text-left text-sm uppercase text-gray-500"
+                headers={headerGroups}
+              />
+              {page.map((row) => {
+                prepareRow(row)
+                return (
+                  <EntryList.Row
+                    key={row.original.outline.steno}
+                    className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
+                    row={row}
+                  />
+                )
+              })}
+            </EntryList>
           </>
         ) : (
-          <></>
+          <div className="mt-12 text-italic text-gray-500">
+            No entries to display.
+          </div>
         )
       ) : entriesError ? (
         <Error err={entriesError} />
