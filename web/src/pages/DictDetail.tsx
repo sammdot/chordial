@@ -8,7 +8,6 @@ import DictInfo from "src/components/DictInfo"
 import EntryList from "src/components/EntryList"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
-import ShortDate from "src/components/ShortDate"
 import { useApiQuery } from "src/utils/hooks"
 
 type Params = {
@@ -26,7 +25,9 @@ export default function DictDetail() {
 
   const entryCount = 100
   const [pageId, setPageId] = useState(0)
-  const [sortBy, setSortBy] = useState<"steno" | "translation">("steno")
+  // TODO: Implement sorting
+  // const [sortBy, setSortBy] = useState<"steno" | "translation">("steno")
+  const sortBy = "steno"
   const {
     loading: entriesLoading,
     data: entriesData,
@@ -48,6 +49,7 @@ export default function DictDetail() {
   const columns: Column<Entry>[] = useMemo(
     () => [
       {
+        id: "outline",
         accessor: (row: Entry) => row.outline.steno,
         Header: "Outline",
         Cell: ({ value }: { value: any }) => (
@@ -57,6 +59,7 @@ export default function DictDetail() {
         ),
       },
       {
+        id: "translation",
         accessor: (row: Entry) => row.translation.translation,
         Header: "Translation",
       },

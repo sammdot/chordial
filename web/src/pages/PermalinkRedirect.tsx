@@ -47,7 +47,7 @@ export default function PermalinkRedirect({ type }: Props) {
         }
         return Promise.resolve(undefined)
       },
-      [uid]
+      [uid, type]
     )
   )
 
@@ -58,7 +58,7 @@ export default function PermalinkRedirect({ type }: Props) {
         navigateTo(url!)
       }
     }
-  }, [loading, data])
+  }, [loading, data, type, navigateTo])
 
   return loading ? <Loader /> : error ? <Error err={error} /> : <></>
 }
