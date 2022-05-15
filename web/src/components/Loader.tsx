@@ -1,7 +1,3 @@
-import { ReactNode } from "react"
-
-import { ChordialApiError } from "src/api/ChordialApi"
-
 type Props = {
   className?: string
 }

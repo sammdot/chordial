@@ -1,4 +1,4 @@
-import { Dictionary, User } from "src/api/models"
+import { Dictionary, EntryResults, User } from "src/api/models"
 
 import config from "src/config"
 
@@ -12,6 +12,12 @@ export class ChordialApiError extends Error {
   }
 }
 
+type EntryOptions = {
+  count: number
+  offset: number
+  sort: "steno" | "translation"
+}
+
 export class ChordialApi {
   static async userByName(name: string): Promise<User> {
     return ChordialApi._get("/users", { name })
@@ -19,6 +25,13 @@ export class ChordialApi {
 
   static async dictByName(username: string, name: string): Promise<Dictionary> {
     return ChordialApi._get("/dicts", { username, name })
+  }
+
+  static async entries(
+    dict: string,
+    options: EntryOptions
+  ): Promise<EntryResults> {
+    return ChordialApi._get(`/dicts/${dict}/entries`, options)
   }
 
   private static async _get(url: string, params?: any): Promise<any> {

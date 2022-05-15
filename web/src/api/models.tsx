@@ -33,4 +33,24 @@ export interface Dictionary extends Item, CreatedTime, UpdatedTime {
   visibility: "public" | "unlisted" | "private"
   proprietary: boolean
   theory?: Theory
+  num_entries: number
+}
+
+export interface Outline extends Item {
+  steno: string
+}
+
+export interface Translation extends Item {
+  translation: string
+}
+
+export interface Entry extends Item, CreatedTime {
+  outline: Outline
+  translation: Translation
+}
+
+export interface EntryResults {
+  count: number
+  offset: number
+  entries: Entry[]
 }

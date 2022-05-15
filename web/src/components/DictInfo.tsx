@@ -1,5 +1,8 @@
+import { FaCheck } from "react-icons/fa"
+
 import { Dictionary } from "src/api/models"
 import Link from "src/components/Link"
+import Permalink from "src/components/Permalink"
 import ShortDate from "src/components/ShortDate"
 
 type Props = {
@@ -8,7 +11,8 @@ type Props = {
 
 export function DictBadge({ dict }: Props) {
   return dict.theory ? (
-    <div className="inline-block translate-y-[-0.25rem] before:content-['✓_'] px-1.5 pt-0.5 rounded-md text-sm font-medium bg-brand text-white ml-3 select-none">
+    <div className="inline-block translate-y-[-0.25rem] px-1.5 pt-0.5 rounded-md text-sm font-medium bg-brand text-white ml-3 select-none">
+      <FaCheck className="inline translate-y-[-1px] mr-1" />
       {dict.theory.display_name}
     </div>
   ) : (
@@ -17,19 +21,26 @@ export function DictBadge({ dict }: Props) {
 }
 
 export default function DictInfo({ dict }: Props) {
+  let numEntries = dict.num_entries.toLocaleString("en-US")
   return (
-    <>
-      <div>
-        <span className="text-3xl">
-          <Link to={`/${dict.user.username}`}>{dict.user.username}</Link>
-          <span className="mx-2">/</span>
-          <span className="font-medium">{dict.name}</span>
-          <DictBadge dict={dict} />
-        </span>
+    <div className="flex items-center">
+      <div className="flex-grow">
+        <div>
+          <span className="text-3xl">
+            <Link to={`/${dict.user.username}`}>{dict.user.username}</Link>
+            <span className="mx-2">/</span>
+            <span className="font-medium">{dict.name}</span>
+            <DictBadge dict={dict} />
+          </span>
+        </div>
+        <div className="text-md text-gray-700">
+          <span className="font-semibold">{numEntries}</span> entries
+        </div>
+        <div className="text-md text-gray-400">
+          Created <ShortDate date={dict.created_time} />
+        </div>
       </div>
-      <div className="text-md text-gray-400">
-        Created <ShortDate date={dict.created_time} />
-      </div>
-    </>
+      <Permalink url={`/d/${dict.uid}`} />
+    </div>
   )
 }

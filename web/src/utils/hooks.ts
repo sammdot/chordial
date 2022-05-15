@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 
 import { ApiContext, ChordialApi } from "src/api"
 import { ChordialApiError } from "src/api/ChordialApi"
@@ -19,7 +19,7 @@ export function useApiQuery<T>(
   const [data, setData] = useState<T>()
   const [error, setError] = useState<ChordialApiError>()
 
-  useMemo(() => {
+  useEffect(() => {
     queryFn(api)
       .then((data: T) => {
         setData(data)

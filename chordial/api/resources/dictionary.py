@@ -1,7 +1,8 @@
 from http import HTTPStatus
-from flask import g, redirect, request
+from flask import current_app, g, redirect, request
 from flask_restful import abort, Resource, url_for
 from marshmallow_enum import EnumField
+from sqlalchemy.sql import func
 
 from chordial.api.auth import login_required
 from chordial.models import (
@@ -19,7 +20,6 @@ class DictionaryResource(Resource):
   @params(format=EnumField(DictionaryFormat))
   def get(self, dict_id, format=None):
     if d := Dictionary.with_id(dict_id):
-      print(d.theory)
       if (g.id != d.user_id
           and d.visibility == Visibility.private
           and not g.is_admin):
@@ -32,7 +32,10 @@ class DictionaryResource(Resource):
         else:
           return d.to_json()
       elif format is None:
-        return Dictionary.schema.dump(d)
+        count = (
+          current_app.session.query(func.count(Entry.id))
+            .filter(Entry.dictionary_id == dict_id).scalar())
+        return Dictionary.schema.dump(d) | {"num_entries": count}
       else:
         abort(HTTPStatus.BAD_REQUEST, message=f"Unrecognized format {format}")
     abort(HTTPStatus.NOT_FOUND)
