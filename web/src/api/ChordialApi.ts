@@ -6,10 +6,6 @@ export class ChordialApiError extends Error {
   constructor(public message: string, public status: number) {
     super(message)
   }
-
-  get is404(): boolean {
-    return this.status === 404
-  }
 }
 
 type EntryOptions = {
@@ -19,6 +15,10 @@ type EntryOptions = {
 }
 
 export class ChordialApi {
+  static async get(url: string): Promise<any> {
+    return ChordialApi._get(url)
+  }
+
   static async userByName(name: string): Promise<User> {
     return ChordialApi._get("/users", { name })
   }

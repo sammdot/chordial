@@ -6,6 +6,7 @@ import Error from "src/components/Error"
 import Footer from "src/components/Footer"
 import Header from "src/components/Header"
 import DictDetail from "src/pages/DictDetail"
+import PermalinkRedirect from "src/pages/PermalinkRedirect"
 import UserDetail from "src/pages/UserDetail"
 import useDocumentTitle from "src/utils/title"
 
@@ -16,6 +17,8 @@ export default function App() {
       <Header />
       <div className="w-full md:container mx-auto px-6 pt-4 pb-10 flex-grow min-h-full">
         <Routes>
+          <Route path="/d/:uid" element={<PermalinkRedirect type="dict" />} />
+          <Route path="/u/:uid" element={<PermalinkRedirect type="user" />} />
           <Route path="/:user/:dict" element={<DictDetail />} />
           <Route path="/:user" element={<UserDetail />} />
           <Route path="/" element={<></>} />
