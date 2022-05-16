@@ -43,6 +43,7 @@
     "autoprefixer": "^10.4.7",
     "lodash": "^4.17.21",
     "postcss": "^8.4.13",
+    "react-country-flag": "^3.0.2",
     "react-icons": "^4.3.1",
     "react-scripts": "5.0.1",
     "react-table": "^7.7.0",

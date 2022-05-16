@@ -20,7 +20,7 @@ export default function OutlineDetail() {
     useCallback(
       (api) =>
         layout && steno
-          ? api.searchBySteno(layout!, steno!)
+          ? api.searchBySteno(layout!, decodeURIComponent(steno!))
           : Promise.resolve(undefined),
       [layout, steno]
     )

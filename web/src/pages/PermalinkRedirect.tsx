@@ -43,10 +43,12 @@ function buildRedirectUrl(type: ItemType, data: Item): string | undefined {
     return `/${dict.user.username}/${dict.name}`
   } else if (type === "outline") {
     let ol = (data as OutlineResults).outline
-    return `/outlines/${ol.layout?.short_name}/${ol.steno}`
+    return `/outlines/${ol.layout?.short_name}/${encodeURIComponent(ol.steno)}`
   } else if (type === "translation") {
     let tl = (data as TranslationResults).translation
-    return `/translations/${tl.layout?.short_name}/${tl.translation}`
+    return `/translations/${tl.layout?.short_name}/${encodeURIComponent(
+      tl.translation
+    )}`
   }
 }
 

@@ -20,7 +20,7 @@ export default function TranslationDetail() {
     useCallback(
       (api) =>
         layout && translation
-          ? api.searchByTranslation(layout!, translation!)
+          ? api.searchByTranslation(layout!, decodeURIComponent(translation!))
           : Promise.resolve(undefined),
       [layout, translation]
     )
