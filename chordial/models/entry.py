@@ -41,6 +41,10 @@ class Entry(Base, IdMixin(10), CreatedTimeMixin):
     return f"{self.outline.repr_label} => {self.translation.repr_label}"
 
   @staticmethod
+  def with_id(id):
+    return Entry.query.filter_by(id=id).first()
+
+  @staticmethod
   def with_steno(steno, dic):
     return (
       Entry.query.join(Entry.outline).filter(Entry.dictionary == dic)
@@ -62,15 +66,17 @@ class EntrySchema(BaseSchema):
   translation = Nested("TranslationSchema")
   status = EnumField(EntryStatus)
   derivation = EnumField(DerivationType)
+  dictionary = Nested("DictionaryListSchema", exclude=("layout",))
 
 class EntryListSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Entry
-    exclude = BaseSchema.Meta.exclude + ("derivation", "mnemonic")
+    exclude = BaseSchema.Meta.exclude + ("created_time", "mnemonic")
 
   steno = Pluck("OutlineSchema", "steno", attribute="outline")
-  translation = Pluck("TranslationSchema", "translation")
+  translation = Nested("TranslationSchema", only=("translation", "spelling_variant"))
   status = EnumField(EntryStatus)
+  derivation = EnumField(DerivationType)
 
 Entry.schema = EntrySchema()
 Entry.list_schema = EntryListSchema()

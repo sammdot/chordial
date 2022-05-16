@@ -42,15 +42,27 @@ export interface Outline extends Item {
 
 export interface Translation extends Item {
   translation: string
+  spelling_variant?: string | null
 }
 
 export interface Entry extends Item, CreatedTime {
   outline: Outline
   translation: Translation
+  dictionary?: Dictionary
 }
 
 export interface EntryResults {
   count: number
   offset: number
+  entries: Entry[]
+}
+
+export interface SearchQuery {
+  outline?: Outline
+  translation?: Translation
+}
+
+export interface SearchResults {
+  search: SearchQuery
   entries: Entry[]
 }

@@ -1,4 +1,4 @@
-import { Dictionary, EntryResults, User } from "src/api/models"
+import { Dictionary, EntryResults, SearchResults, User } from "src/api/models"
 
 import config from "src/config"
 
@@ -25,6 +25,20 @@ export class ChordialApi {
 
   static async dictByName(username: string, name: string): Promise<Dictionary> {
     return ChordialApi._get("/dicts", { username, name })
+  }
+
+  static async searchBySteno(
+    layout: string,
+    steno: string
+  ): Promise<SearchResults> {
+    return ChordialApi._get("/entries", { layout, steno })
+  }
+
+  static async searchByTranslation(
+    layout: string,
+    translation: string
+  ): Promise<SearchResults> {
+    return ChordialApi._get("/entries", { layout, translation })
   }
 
   static async entries(

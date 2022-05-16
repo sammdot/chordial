@@ -62,4 +62,11 @@ class DictionarySchema(BaseSchema):
   user = Nested("UserSchema", exclude=("dictionaries",))
   theory = Nested("TheorySchema", exclude=("official_dictionary", "layout"))
 
+class DictionaryListSchema(DictionarySchema):
+  class Meta(DictionarySchema.Meta):
+    exclude = DictionarySchema.Meta.exclude + ("layout", "created_time", "updated_time")
+
+  user = Nested("UserSchema", only=("uid", "username", "is_admin", "is_system"))
+
 Dictionary.schema = DictionarySchema()
+Dictionary.list_schema = DictionaryListSchema()

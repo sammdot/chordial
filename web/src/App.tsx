@@ -6,7 +6,9 @@ import Error from "src/components/Error"
 import Footer from "src/components/Footer"
 import Header from "src/components/Header"
 import DictDetail from "src/pages/DictDetail"
+import OutlineDetail from "src/pages/OutlineDetail"
 import PermalinkRedirect from "src/pages/PermalinkRedirect"
+import TranslationDetail from "src/pages/TranslationDetail"
 import UserDetail from "src/pages/UserDetail"
 import useDocumentTitle from "src/utils/title"
 
@@ -19,6 +21,11 @@ export default function App() {
         <Routes>
           <Route path="/d/:uid" element={<PermalinkRedirect type="dict" />} />
           <Route path="/u/:uid" element={<PermalinkRedirect type="user" />} />
+          <Route
+            path="/translations/:layout/:translation"
+            element={<TranslationDetail />}
+          />
+          <Route path="/outlines/:layout/:steno" element={<OutlineDetail />} />
           <Route path="/:user/:dict" element={<DictDetail />} />
           <Route path="/:user" element={<UserDetail />} />
           <Route path="/" element={<></>} />
