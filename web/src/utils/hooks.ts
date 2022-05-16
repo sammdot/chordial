@@ -22,6 +22,7 @@ export function useApiQuery<T>(
   const [error, setError] = useState<ChordialApiError>()
 
   useEffect(() => {
+    setLoading(true)
     queryFn(api)
       .then((data: T) => {
         setData(data)

@@ -96,58 +96,56 @@ export default function DictDetail() {
   ) : data ? (
     <>
       <DictInfo dict={data} />
+      <ReactPaginate
+        breakLabel="•••"
+        previousLabel="←"
+        nextLabel="→"
+        onPageChange={({ selected: page }) => goto(page)}
+        disableInitialCallback={true}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        className="mt-6 text-center font-medium"
+        previousClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-l rounded-l-md"
+        pageClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
+        breakClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
+        nextClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-r rounded-r-md"
+        activeClassName="bg-brand text-white hover:bg-brand"
+        previousLinkClassName="px-3 py-2.5 leading-6"
+        pageLinkClassName="px-3 py-2.5 leading-6"
+        breakLinkClassName="px-3 py-2.5 leading-6"
+        nextLinkClassName="px-3 py-2.5 leading-6"
+        disabledClassName="text-gray-400 hover:bg-white"
+        renderOnZeroPageCount={() => null}
+      />
       {entriesLoading ? (
         <Loader />
       ) : entriesData ? (
         entriesData.entries.length ? (
-          <>
-            <ReactPaginate
-              breakLabel="•••"
-              previousLabel="←"
-              nextLabel="→"
-              onPageChange={({ selected: page }) => goto(page)}
-              disableInitialCallback={true}
-              pageRangeDisplayed={5}
-              pageCount={pageCount}
-              className="mt-6 text-center font-medium"
-              previousClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-l rounded-l-md"
-              pageClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
-              breakClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
-              nextClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-r rounded-r-md"
-              activeClassName="bg-brand text-white hover:bg-brand"
-              previousLinkClassName="px-3 py-2.5 leading-6"
-              pageLinkClassName="px-3 py-2.5 leading-6"
-              breakLinkClassName="px-3 py-2.5 leading-6"
-              nextLinkClassName="px-3 py-2.5 leading-6"
-              disabledClassName="text-gray-400 hover:bg-white"
-              renderOnZeroPageCount={() => null}
+          <EntryList className="mt-6">
+            <EntryList.Header
+              className="hidden sm:grid sm:grid-cols-2 my-2"
+              cellClassName="font-semibold text-left text-sm uppercase text-gray-500"
+              headers={headerGroups}
             />
-            <EntryList className="mt-6">
-              <EntryList.Header
-                className="hidden sm:grid sm:grid-cols-2 my-2"
-                cellClassName="font-semibold text-left text-sm uppercase text-gray-500"
-                headers={headerGroups}
-              />
-              {page.map((row) => {
-                prepareRow(row)
-                return (
-                  <Link
-                    to={`/entries/${layoutName}/${encodeURIComponent(
-                      row.original.outline.steno
-                    )}/${encodeURIComponent(
-                      row.original.translation.translation
-                    )}`}
-                  >
-                    <EntryList.Row
-                      key={row.original.outline.steno}
-                      className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
-                      row={row}
-                    />
-                  </Link>
-                )
-              })}
-            </EntryList>
-          </>
+            {page.map((row) => {
+              prepareRow(row)
+              return (
+                <Link
+                  to={`/entries/${layoutName}/${encodeURIComponent(
+                    row.original.outline.steno
+                  )}/${encodeURIComponent(
+                    row.original.translation.translation
+                  )}`}
+                >
+                  <EntryList.Row
+                    key={row.original.outline.steno}
+                    className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
+                    row={row}
+                  />
+                </Link>
+              )
+            })}
+          </EntryList>
         ) : (
           <div className="mt-12 text-italic text-gray-500">
             No entries to display.
