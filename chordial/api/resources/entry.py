@@ -14,10 +14,11 @@ class EntryResource(Resource):
       same_translation = Entry.query.filter_by(translation=tl).all()
 
       return {
+        "layout": Layout.schema.dump(ol.layout),
         "entry": Entry.schema.dump(e),
         "related": {
-          "outline": [Entry.list_schema.dump(e) for e in same_outline],
-          "translation": [Entry.list_schema.dump(e) for e in same_translation],
+          "outline": [Entry.schema.dump(e) for e in same_outline],
+          "translation": [Entry.schema.dump(e) for e in same_translation],
         },
       }
     abort(HTTPStatus.NOT_FOUND)
@@ -50,6 +51,7 @@ class EntriesResource(Resource):
 
       entries = q.all()
       return {
+        "layout": Layout.schema.dump(l),
         "search": search_params,
         "entries": [Entry.schema.dump(e) for e in entries],
       }

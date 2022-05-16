@@ -1,6 +1,7 @@
 import * as _ from "lodash"
 import { useCallback, useMemo } from "react"
 import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 
 import { Entry, SearchResults } from "src/api/models"
 import DictLink from "src/components/DictLink"
@@ -23,6 +24,10 @@ export default function OutlineDetail() {
           ? api.searchBySteno(layout!, decodeURIComponent(steno!))
           : Promise.resolve(undefined),
       [layout, steno]
+    ),
+    useCallback(
+      (re?: SearchResults) => re?.search.outline?.steno || undefined,
+      []
     )
   )
 
@@ -31,6 +36,11 @@ export default function OutlineDetail() {
       data
         ? _.groupBy(data.entries, (e: Entry) => e.translation.translation)
         : {},
+    [data]
+  )
+
+  const layoutName: string | undefined = useMemo(
+    () => (data ? data.layout!.short_name : undefined),
     [data]
   )
 
@@ -54,16 +64,26 @@ export default function OutlineDetail() {
         ).map((tl) => {
           const entries = entriesByTranslation[tl]
           return (
-            <div className="grid grid-cols-4 py-4" key={tl}>
-              <div className="text-xl">{tl}</div>
-              <div className="col-span-3">
-                {entries.map((entry) => (
-                  <div className="mb-2" key={entry.uid}>
-                    <DictLink dict={entry.dictionary!} className="text-right" />
-                  </div>
-                ))}
+            <Link
+              to={`/entries/${layoutName}/${encodeURIComponent(
+                data.search.outline!.steno
+              )}/${encodeURIComponent(tl)}`}
+              key={tl}
+            >
+              <div className="grid grid-cols-4 py-2 px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md">
+                <div className="text-xl">{tl}</div>
+                <div className="col-span-3">
+                  {entries.map((entry) => (
+                    <div className="my-1" key={entry.uid}>
+                      <DictLink
+                        dict={entry.dictionary!}
+                        className="text-right"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>

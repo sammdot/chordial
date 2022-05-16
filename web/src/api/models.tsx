@@ -34,6 +34,7 @@ export interface Dictionary extends Item, CreatedTime, UpdatedTime {
   proprietary: boolean
   theory?: Theory
   num_entries: number
+  layout?: Layout
 }
 
 export interface Outline extends Item {
@@ -65,16 +66,29 @@ export interface SearchQuery {
 }
 
 export interface SearchResults {
+  layout: Layout
   search: SearchQuery
   entries: Entry[]
 }
 
 export interface OutlineResults {
+  layout: Layout
   outline: Outline
   entries: Entry[]
 }
 
 export interface TranslationResults {
+  layout: Layout
   translation: Translation
   entries: Entry[]
+}
+
+export interface EntryRelated {
+  outline: Entry[]
+  translation: Entry[]
+}
+
+export interface EntryDetails {
+  entry: Entry
+  related: EntryRelated
 }

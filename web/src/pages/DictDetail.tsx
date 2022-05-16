@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react"
 import ReactPaginate from "react-paginate"
 import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 import { Column, useTable, usePagination } from "react-table"
 
 import { Dictionary, Entry, EntryResults } from "src/api/models"
@@ -85,6 +86,11 @@ export default function DictDetail() {
     gotoPage(page)
   }
 
+  const layoutName: string | undefined = useMemo(
+    () => (data ? data.layout!.short_name : undefined),
+    [data]
+  )
+
   return loading ? (
     <Loader />
   ) : data ? (
@@ -125,11 +131,19 @@ export default function DictDetail() {
               {page.map((row) => {
                 prepareRow(row)
                 return (
-                  <EntryList.Row
-                    key={row.original.outline.steno}
-                    className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
-                    row={row}
-                  />
+                  <Link
+                    to={`/entries/${layoutName}/${encodeURIComponent(
+                      row.original.outline.steno
+                    )}/${encodeURIComponent(
+                      row.original.translation.translation
+                    )}`}
+                  >
+                    <EntryList.Row
+                      key={row.original.outline.steno}
+                      className="sm:grid sm:grid-cols-2 py-1 text-lg px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
+                      row={row}
+                    />
+                  </Link>
                 )
               })}
             </EntryList>

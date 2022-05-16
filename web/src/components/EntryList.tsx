@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import { HeaderGroup, Row } from "react-table"
 
 import { Entry } from "src/api/models"
+import Link from "src/components/Link"
 
 type HeaderProps = {
   className?: string

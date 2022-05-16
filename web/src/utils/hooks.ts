@@ -12,7 +12,7 @@ type ApiQueryResult<T> = {
 
 export function useApiQuery<T>(
   queryFn: (api: typeof ChordialApi) => Promise<T>,
-  titleFn?: (_: T) => string
+  titleFn?: (_: T) => string | undefined
 ): ApiQueryResult<T> {
   const api = useContext(ApiContext)
   const [loading, setLoading] = useState(true)
@@ -23,7 +23,9 @@ export function useApiQuery<T>(
     queryFn(api)
       .then((data: T) => {
         setData(data)
-        setDocumentTitle(titleFn?.(data))
+        if (titleFn) {
+          setDocumentTitle(titleFn(data))
+        }
         setLoading(false)
       })
       .catch((err: ChordialApiError) => {

@@ -2,7 +2,7 @@ from flask import redirect
 from flask_restful import abort, Resource
 from http import HTTPStatus
 
-from chordial.models import Entry, Outline
+from chordial.models import Entry, Layout, Outline
 
 class OutlineResource(Resource):
   def get(self, outline_id):
@@ -10,6 +10,7 @@ class OutlineResource(Resource):
       entries = Entry.query.filter_by(outline=ol).all()
 
       return {
+        "layout": Layout.schema.dump(tl.layout),
         "outline": Outline.full_schema.dump(ol),
         "entries": [Entry.list_schema.dump(e) for e in entries],
       }

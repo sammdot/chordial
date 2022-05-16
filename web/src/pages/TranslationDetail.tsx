@@ -1,8 +1,9 @@
 import * as _ from "lodash"
 import { useCallback, useMemo } from "react"
 import { useParams } from "react-router"
+import { Link } from "react-router-dom"
 
-import { Entry, SearchResults } from "src/api/models"
+import { Entry, SearchResults, Translation } from "src/api/models"
 import DictLink from "src/components/DictLink"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
@@ -23,11 +24,20 @@ export default function TranslationDetail() {
           ? api.searchByTranslation(layout!, decodeURIComponent(translation!))
           : Promise.resolve(undefined),
       [layout, translation]
+    ),
+    useCallback(
+      (re?: SearchResults) => re?.search.translation?.translation || undefined,
+      []
     )
   )
 
   const entriesBySteno = useMemo(
     () => (data ? _.groupBy(data.entries, (e: Entry) => e.outline.steno) : {}),
+    [data]
+  )
+
+  const layoutName: string | undefined = useMemo(
+    () => (data ? data.layout!.short_name : undefined),
     [data]
   )
 
@@ -51,16 +61,29 @@ export default function TranslationDetail() {
         ).map((steno) => {
           const outlines = entriesBySteno[steno]
           return (
-            <div className="grid grid-cols-4 py-4" key={steno}>
-              <div className="font-mono text-xl">{steno}</div>
-              <div className="col-span-3">
-                {outlines.map((entry) => (
-                  <div className="mb-2" key={entry.uid}>
-                    <DictLink dict={entry.dictionary!} className="text-right" />
-                  </div>
-                ))}
+            <Link
+              to={`/entries/${layoutName}/${encodeURIComponent(
+                steno
+              )}/${encodeURIComponent(data.search.translation!.translation)}`}
+              key={data.search.translation!.translation}
+            >
+              <div
+                className="grid grid-cols-4 py-2 px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
+                key={steno}
+              >
+                <div className="font-mono text-xl">{steno}</div>
+                <div className="col-span-3">
+                  {outlines.map((entry) => (
+                    <div className="my-1" key={entry.uid}>
+                      <DictLink
+                        dict={entry.dictionary!}
+                        className="text-right"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>

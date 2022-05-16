@@ -6,6 +6,7 @@ import Error from "src/components/Error"
 import Footer from "src/components/Footer"
 import Header from "src/components/Header"
 import DictDetail from "src/pages/DictDetail"
+import EntryDetail from "src/pages/EntryDetail"
 import OutlineDetail from "src/pages/OutlineDetail"
 import PermalinkRedirect from "src/pages/PermalinkRedirect"
 import TranslationDetail from "src/pages/TranslationDetail"
@@ -28,6 +29,10 @@ export default function App() {
           <Route
             path="/ol/:uid"
             element={<PermalinkRedirect type="outline" />}
+          />
+          <Route
+            path="/entries/:layout/:steno/:translation"
+            element={<EntryDetail />}
           />
           <Route
             path="/translations/:layout/:translation"
