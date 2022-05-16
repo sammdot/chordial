@@ -38,11 +38,13 @@ export interface Dictionary extends Item, CreatedTime, UpdatedTime {
 
 export interface Outline extends Item {
   steno: string
+  layout?: Layout
 }
 
 export interface Translation extends Item {
   translation: string
   spelling_variant?: string | null
+  layout?: Layout
 }
 
 export interface Entry extends Item, CreatedTime {
@@ -64,5 +66,15 @@ export interface SearchQuery {
 
 export interface SearchResults {
   search: SearchQuery
+  entries: Entry[]
+}
+
+export interface OutlineResults {
+  outline: Outline
+  entries: Entry[]
+}
+
+export interface TranslationResults {
+  translation: Translation
   entries: Entry[]
 }

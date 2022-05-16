@@ -55,7 +55,7 @@ export default function TranslationDetail() {
               <div className="font-mono text-xl">{steno}</div>
               <div className="col-span-3">
                 {outlines.map((entry) => (
-                  <div className="mb-2">
+                  <div className="mb-2" key={entry.uid}>
                     <DictLink dict={entry.dictionary!} className="text-right" />
                   </div>
                 ))}

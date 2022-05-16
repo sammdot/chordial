@@ -58,7 +58,7 @@ export default function OutlineDetail() {
               <div className="text-xl">{tl}</div>
               <div className="col-span-3">
                 {entries.map((entry) => (
-                  <div className="mb-2">
+                  <div className="mb-2" key={entry.uid}>
                     <DictLink dict={entry.dictionary!} className="text-right" />
                   </div>
                 ))}

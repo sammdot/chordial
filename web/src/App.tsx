@@ -22,6 +22,14 @@ export default function App() {
           <Route path="/d/:uid" element={<PermalinkRedirect type="dict" />} />
           <Route path="/u/:uid" element={<PermalinkRedirect type="user" />} />
           <Route
+            path="/tl/:uid"
+            element={<PermalinkRedirect type="translation" />}
+          />
+          <Route
+            path="/ol/:uid"
+            element={<PermalinkRedirect type="outline" />}
+          />
+          <Route
             path="/translations/:layout/:translation"
             element={<TranslationDetail />}
           />
