@@ -4,7 +4,10 @@ import { User } from "src/api/models"
 import Permalink from "src/components/Permalink"
 import ShortDate from "src/components/ShortDate"
 
-type Props = { user: User }
+type Props = {
+  user: User
+  hidePermalink?: boolean
+}
 
 export function UserBadge({ user }: Props) {
   return user.is_system || user.is_admin ? (
@@ -18,7 +21,7 @@ export function UserBadge({ user }: Props) {
   )
 }
 
-export default function UserInfo({ user }: Props) {
+export default function UserInfo({ user, hidePermalink }: Props) {
   return (
     <div className="flex items-center">
       <div className="flex-grow">
@@ -31,7 +34,7 @@ export default function UserInfo({ user }: Props) {
           <ShortDate date={user.created_time} />
         </div>
       </div>
-      <Permalink url={`/u/${user.uid}`} />
+      {hidePermalink ? <></> : <Permalink url={`/u/${user.uid}`} />}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import {
+  AccessToken,
   Dictionary,
   EntryDetails,
   EntryResults,
@@ -21,8 +22,22 @@ type EntryOptions = {
 }
 
 export class ChordialApi {
+  static authToken?: string
+
   static async get(url: string): Promise<any> {
     return ChordialApi._get(url)
+  }
+
+  static async auth(): Promise<User> {
+    return ChordialApi._get("/auth")
+  }
+
+  static async login(username: string, password: string): Promise<AccessToken> {
+    return ChordialApi._post("/auth", { username, password })
+  }
+
+  static async logout(): Promise<any> {
+    return ChordialApi._delete("/auth")
   }
 
   static async userByName(name: string): Promise<User> {
@@ -74,7 +89,11 @@ export class ChordialApi {
   }
 
   private static async _post(url: string, body?: any): Promise<any> {
-    return ChordialApi._fetch("get", url, body)
+    return ChordialApi._fetch("post", url, body)
+  }
+
+  private static async _delete(url: string, body?: any): Promise<any> {
+    return ChordialApi._fetch("delete", url, body)
   }
 
   private static async _fetch(
@@ -82,13 +101,17 @@ export class ChordialApi {
     url: string,
     body?: any
   ): Promise<any> {
+    const headers: any = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    }
+    if (ChordialApi.authToken) {
+      headers.Authorization = `Bearer ${ChordialApi.authToken}`
+    }
     const response = await fetch(`${config.baseUrl}${url}`, {
       method,
       body: !!body ? JSON.stringify(body) : null,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     })
     if (response.ok) {
       return await response.json()

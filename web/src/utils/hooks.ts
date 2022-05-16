@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { Dispatch, useContext, useEffect, useState } from "react"
 
 import { ApiContext, ChordialApi } from "src/api"
 import { ChordialApiError } from "src/api/ChordialApi"
@@ -9,6 +9,8 @@ type ApiQueryResult<T> = {
   data?: T
   error?: ChordialApiError
 }
+
+type Fn<T> = (_: T) => T
 
 export function useApiQuery<T>(
   queryFn: (api: typeof ChordialApi) => Promise<T>,
@@ -35,4 +37,24 @@ export function useApiQuery<T>(
   }, [api, queryFn, titleFn])
 
   return { loading, data, error }
+}
+
+export function useAuth(): [string | undefined, Dispatch<string | undefined>] {
+  const [authToken, setStoredToken] = useState<string | undefined>(() => {
+    let token = window.localStorage.getItem("token") || undefined
+    ChordialApi.authToken = token
+    return token
+  })
+
+  const setAuthToken = (value?: string) => {
+    if (value) {
+      window.localStorage.setItem("token", value)
+    } else {
+      window.localStorage.removeItem("token")
+    }
+    ChordialApi.authToken = value
+    setStoredToken(value)
+  }
+
+  return [authToken, setAuthToken]
 }

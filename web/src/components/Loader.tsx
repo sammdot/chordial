@@ -1,10 +1,13 @@
 type Props = {
   className?: string
+  containerClassName?: string
 }
 
-export default function Loader({ className }: Props) {
+export default function Loader({ className, containerClassName }: Props) {
   return (
-    <div className="w-full mx-auto center mt-40 md:mt-60">
+    <div
+      className={containerClassName || "w-full mx-auto center mt-40 md:mt-60"}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 100 100"

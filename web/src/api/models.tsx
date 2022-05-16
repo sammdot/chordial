@@ -92,3 +92,7 @@ export interface EntryDetails {
   entry: Entry
   related: EntryRelated
 }
+
+export interface AccessToken {
+  access_token: string
+}
