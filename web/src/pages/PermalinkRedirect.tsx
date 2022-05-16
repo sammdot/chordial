@@ -72,7 +72,7 @@ export default function PermalinkRedirect({ type }: Props) {
     if (!loading && data) {
       let url = buildRedirectUrl(type, data)
       if (url) {
-        navigateTo(url!)
+        navigateTo(url!, { replace: true })
       }
     }
   }, [loading, data, type, navigateTo])
