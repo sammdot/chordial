@@ -4,6 +4,7 @@ import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 
 import { Entry, EntryDetails, SearchResults } from "src/api/models"
+import { OutlineCounter, TranslationCounter } from "src/components/Counter"
 import DictLink from "src/components/DictLink"
 import EntryInfo from "src/components/EntryInfo"
 import Error from "src/components/Error"
@@ -89,11 +90,11 @@ export default function EntryDetail() {
         <>
           <div className="mt-8">
             <div className="mb-2">
-              <span className="font-semibold">
-                {Object.keys(entriesBySteno).length}
-              </span>{" "}
-              outline
-              {Object.keys(entriesBySteno).length === 1 ? "" : "s"} for '
+              <OutlineCounter
+                number={Object.keys(entriesBySteno).length}
+                className="font-semibold"
+              />{" "}
+              for '
               <ColoredLink
                 to={`/translations/${layoutName}/${encodeURIComponent(
                   data!.search.translation!.translation
@@ -136,13 +137,11 @@ export default function EntryDetail() {
           </div>
           <div className="mt-8">
             <div className="mb-2">
-              <span className="font-semibold">
-                {Object.keys(entriesByTranslation).length}
-              </span>{" "}
-              translation
-              {Object.keys(entriesByTranslation).length === 1
-                ? ""
-                : "s"} for{" "}
+              <TranslationCounter
+                number={Object.keys(entriesByTranslation).length}
+                className="font-semibold"
+              />{" "}
+              for{" "}
               <ColoredLink
                 to={`/outlines/${layoutName}/${encodeURIComponent(
                   data!.search.outline!.steno

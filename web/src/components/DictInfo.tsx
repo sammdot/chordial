@@ -1,6 +1,7 @@
 import { FaCheck } from "react-icons/fa"
 
 import { Dictionary } from "src/api/models"
+import { EntryCounter } from "src/components/Counter"
 import Link from "src/components/Link"
 import Permalink from "src/components/Permalink"
 import ShortDate from "src/components/ShortDate"
@@ -21,7 +22,6 @@ export function DictBadge({ dict }: Props) {
 }
 
 export default function DictInfo({ dict }: Props) {
-  let numEntries = dict.num_entries.toLocaleString("en-US")
   return (
     <div className="flex items-center">
       <div className="flex-grow">
@@ -34,7 +34,7 @@ export default function DictInfo({ dict }: Props) {
           </span>
         </div>
         <div className="text-md text-gray-700">
-          <span className="font-semibold">{numEntries}</span> entries
+          <EntryCounter number={dict.num_entries} className="font-semibold" />
         </div>
         <div className="text-md text-gray-400">
           Created <ShortDate date={dict.created_time} />

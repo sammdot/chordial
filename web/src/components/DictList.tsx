@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 import { Link } from "react-router-dom"
 
 import { Dictionary, User } from "src/api/models"
+import { EntryCounter } from "src/components/Counter"
 import ShortDate from "src/components/ShortDate"
 
 type ItemProps = {
@@ -20,7 +21,7 @@ function DictListItem({ user, dict }: ItemProps) {
       <li className="border border-gray-300 rounded-lg py-4 px-5 hover:shadow-md">
         <div className="text-xl font-medium text-blue-500">{dict.name}</div>
         <div className="text-md text-gray-700">
-          <span className="font-semibold">{numEntries}</span> entries
+          <EntryCounter number={dict.num_entries} className="font-semibold" />
         </div>
         <div className="text-md text-gray-400">
           Last updated <ShortDate date={dict.updated_time} />

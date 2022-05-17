@@ -4,6 +4,7 @@ import { useParams } from "react-router"
 import { Link } from "react-router-dom"
 
 import { Entry, SearchResults } from "src/api/models"
+import { EntryCounter, TranslationCounter } from "src/components/Counter"
 import DictLink from "src/components/DictLink"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
@@ -50,12 +51,11 @@ export default function OutlineDetail() {
     <>
       <OutlineInfo outline={data.search.outline!} />
       <div>
-        <span className="font-semibold">{data.entries.length}</span> entr
-        {data.entries.length === 1 ? "y" : "ies"},{" "}
-        <span className="font-semibold">
-          {Object.keys(entriesByTranslation).length}
-        </span>{" "}
-        translation{Object.keys(entriesByTranslation).length === 1 ? "" : "s"}
+        <EntryCounter number={data.entries.length} className="font-semibold" />,{" "}
+        <TranslationCounter
+          number={Object.keys(entriesByTranslation).length}
+          className="font-semibold"
+        />
       </div>
       <div className="my-6">
         {_.sortBy(
