@@ -1,3 +1,4 @@
+from marshmallow import fields
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
@@ -21,6 +22,10 @@ class Outline(Base, IdMixin(8)):
   )
 
   @property
+  def steno_without_number(self):
+    return self.layout.normalize_remove_number(self.steno)
+
+  @property
   def repr_label(self):
     return self.steno
 
@@ -35,6 +40,8 @@ class Outline(Base, IdMixin(8)):
 class OutlineSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Outline
+
+  steno_without_number = fields.Str()
 
 class OutlineFullSchema(OutlineSchema):
   layout = Nested("LayoutSchema")

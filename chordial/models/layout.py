@@ -33,6 +33,16 @@ class Layout(Base, IdMixin(4)):
       str(self.stroke_parser.from_steno(stroke))
       for stroke in outline.split(STROKE_SEPARATOR)])
 
+  def normalize_remove_number(self, outline):
+    def per_stroke(stroke):
+      stroke = self.stroke_parser.from_steno(stroke)
+      number_key = self.system_definition["number_key"]
+      without_number_key = stroke - self.stroke_parser.from_steno(number_key)
+      return (number_key + str(without_number_key)
+        if stroke.has_digit() else str(stroke))
+    return STROKE_SEPARATOR.join([per_stroke(stroke)
+      for stroke in outline.split(STROKE_SEPARATOR)])
+
   @staticmethod
   def with_id(id: int):
     return Layout.query.filter_by(id=id).first()

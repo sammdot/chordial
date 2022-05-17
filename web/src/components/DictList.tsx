@@ -15,7 +15,6 @@ type ListProps = {
 }
 
 function DictListItem({ user, dict }: ItemProps) {
-  let numEntries = dict.num_entries.toLocaleString("en-US")
   return (
     <Link to={`/${user.username}/${dict.name}`}>
       <li className="border border-gray-300 rounded-lg py-4 px-5 hover:shadow-md">

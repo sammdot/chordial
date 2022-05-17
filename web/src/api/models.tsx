@@ -39,6 +39,7 @@ export interface Dictionary extends Item, CreatedTime, UpdatedTime {
 
 export interface Outline extends Item {
   steno: string
+  steno_without_number: string
   layout?: Layout
 }
 
