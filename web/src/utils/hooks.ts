@@ -10,8 +10,6 @@ type ApiQueryResult<T> = {
   error?: ChordialApiError
 }
 
-type Fn<T> = (_: T) => T
-
 export function useApiQuery<T>(
   queryFn: (api: typeof ChordialApi) => Promise<T>,
   titleFn?: (_: T) => string | undefined

@@ -1,7 +1,6 @@
 import React from "react"
 import { Route, Routes } from "react-router-dom"
 
-import { ApiContext } from "src/api"
 import { ChordialApiError } from "src/api/ChordialApi"
 import Error from "src/components/Error"
 import Footer from "src/components/Footer"
