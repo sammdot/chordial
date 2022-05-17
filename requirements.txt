@@ -17,6 +17,7 @@ marshmallow-enum==1.5.1
 marshmallow-sqlalchemy==0.28.0
 packaging==21.3
 passlib==1.7.4
+plover-stroke==1.1.0
 psycopg2==2.9.3
 Pygments==2.12.0
 PyJWT==2.3.0
