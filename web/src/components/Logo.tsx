@@ -6,7 +6,7 @@ import logo from "src/logo.svg"
 
 export default function Logo(props: any) {
   return (
-    <Link to="/" {...props}>
+    <Link to="/" {...props} className="cursor-pointer">
       <img src={logo} alt={config.appName} className="h-12" />
     </Link>
   )
