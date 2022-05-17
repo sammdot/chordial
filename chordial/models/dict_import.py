@@ -49,7 +49,7 @@ def import_steno_dictionary(
 ):
   l = dic.layout
 
-  outlines = json.keys()
+  outlines = [l.normalize(k) for k in json.keys()]
   translations = json.values()
 
   entries_in_db = {
@@ -77,6 +77,7 @@ def import_steno_dictionary(
 
   callbacks.on_init_read(len(entries_in_db))
   for steno, text in json.items():
+    steno = l.normalize(steno)
     callbacks.on_read_dict((steno, text))
 
     ol = None

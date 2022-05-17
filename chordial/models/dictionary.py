@@ -1,3 +1,5 @@
+from flask import current_app
+from marshmallow.fields import Function
 from marshmallow_enum import EnumField
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Boolean, Column, Enum, ForeignKey, String
@@ -61,6 +63,11 @@ class DictionarySchema(BaseSchema):
   layout = Nested("LayoutSchema", exclude=("theories",))
   user = Nested("UserSchema", exclude=("dictionaries",))
   theory = Nested("TheorySchema", exclude=("official_dictionary", "layout"))
+
+  num_entries = Function(lambda row: (
+    current_app.session.execute(
+      "SELECT COUNT(id) FROM entries WHERE dictionary_id = :id",
+      {"id": row.id}).scalar()))
 
 class DictionaryListSchema(DictionarySchema):
   class Meta(DictionarySchema.Meta):
