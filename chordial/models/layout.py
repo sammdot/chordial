@@ -55,11 +55,13 @@ class Layout(Base, IdMixin(4)):
   def all():
     return Layout.query.all()
 
-class LayoutSchema(BaseSchema):
+class LayoutListSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Layout
     exclude = BaseSchema.Meta.exclude + ("system_definition",)
 
+class LayoutSchema(LayoutListSchema):
   theories = Nested("TheorySchema", many=True, exclude=("layout",))
 
 Layout.schema = LayoutSchema()
+Layout.list_schema = LayoutListSchema()

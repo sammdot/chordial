@@ -3,6 +3,7 @@ from flask_restful import abort, Resource, url_for
 from http import HTTPStatus
 
 from chordial.models import Entry, Layout, Outline, Translation
+from chordial.models.ranking import rank_by_outline, rank_by_translation
 from chordial.utils.params import fields, params
 
 class EntryResource(Resource):
@@ -14,11 +15,27 @@ class EntryResource(Resource):
       same_translation = Entry.query.filter_by(translation=tl).all()
 
       return {
-        "layout": Layout.schema.dump(ol.layout),
+        "layout": Layout.list_schema.dump(ol.layout),
         "entry": Entry.schema.dump(e),
         "related": {
-          "outline": [Entry.schema.dump(e) for e in same_outline],
-          "translation": [Entry.schema.dump(e) for e in same_translation],
+          "outline": [
+            {
+              "score": score,
+              "translation": translation,
+              "entries": [Entry.schema.dump(e) for e in entries],
+            }
+            for (score, translation, entries) in
+            rank_by_translation(same_outline)
+          ],
+          "translation": [
+            {
+              "score": score,
+              "outline": outline,
+              "entries": [Entry.schema.dump(e) for e in entries],
+            }
+            for (score, outline, entries) in
+            rank_by_outline(same_translation)
+          ],
         },
       }
     abort(HTTPStatus.NOT_FOUND, message=f"No entry with ID {entry_id}")
@@ -34,6 +51,8 @@ class EntriesResource(Resource):
       ol, tl = None, None
       search_params = {}
 
+      ok = False
+
       q = Entry.query
       if steno:
         ol = Outline.with_steno(steno, layout=l)
@@ -41,6 +60,7 @@ class EntriesResource(Resource):
           abort(HTTPStatus.NOT_FOUND, message=f"Steno '{steno}' not found")
         search_params["outline"] = Outline.schema.dump(ol)
         q = q.filter_by(outline_id=ol.id)
+        ok = True
       if translation:
         tl = Translation.with_text(translation, layout=l)
         if not tl:
@@ -48,13 +68,42 @@ class EntriesResource(Resource):
             message=f"Translation '{translation}' not found")
         search_params["translation"] = Translation.schema.dump(tl)
         q = q.filter_by(translation_id=tl.id)
+        ok = True
+
+      if not ok:
+        abort(HTTPStatus.BAD_REQUEST,
+          message="Must specify at least one of steno or translation")
 
       entries = q.all()
-      return {
-        "layout": Layout.schema.dump(l),
+      response = {
+        "layout": Layout.list_schema.dump(l),
         "search": search_params,
-        "entries": [Entry.schema.dump(e) for e in entries],
       }
+      if steno and translation:
+        response["entries"] = [Entry.schema.dump(e) for e in entries]
+
+      if steno:
+        response["entries_ranked"] = [
+          {
+            "score": score,
+            "translation": translation,
+            "entries": [Entry.schema.dump(e) for e in entries],
+          }
+          for (score, translation, entries) in
+          rank_by_translation(entries)
+        ]
+      elif translation:
+        response["entries_ranked"] = [
+          {
+            "score": score,
+            "outline": outline,
+            "entries": [Entry.schema.dump(e) for e in entries],
+          }
+          for (score, outline, entries) in
+          rank_by_outline(entries)
+        ]
+
+      return response
 
     abort(HTTPStatus.NOT_FOUND,
       message=f"Steno '{steno}' and translation '{translation}' not found")

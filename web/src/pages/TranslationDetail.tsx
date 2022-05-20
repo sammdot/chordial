@@ -1,13 +1,10 @@
-import * as _ from "lodash"
 import { useCallback, useMemo } from "react"
 import { useParams } from "react-router"
-import { Link } from "react-router-dom"
 
-import { Entry, SearchResults } from "src/api/models"
-import { EntryCounter, OutlineCounter } from "src/components/Counter"
-import DictLink from "src/components/DictLink"
+import { SearchResults } from "src/api/models"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
+import OutlineList from "src/components/OutlineList"
 import TranslationInfo from "src/components/TranslationInfo"
 import { useApiQuery } from "src/utils/hooks"
 
@@ -32,11 +29,6 @@ export default function TranslationDetail() {
     )
   )
 
-  const entriesBySteno = useMemo(
-    () => (data ? _.groupBy(data.entries, (e: Entry) => e.outline.steno) : {}),
-    [data]
-  )
-
   const layoutName: string | undefined = useMemo(
     () => (data ? data.layout!.short_name : undefined),
     [data]
@@ -47,46 +39,11 @@ export default function TranslationDetail() {
   ) : data ? (
     <>
       <TranslationInfo translation={data.search.translation!} />
-      <div>
-        <EntryCounter number={data.entries.length} className="font-semibold" />,{" "}
-        <OutlineCounter
-          number={Object.keys(entriesBySteno).length}
-          className="font-semibold"
-        />
-      </div>
-      <div className="my-6">
-        {_.sortBy(
-          Object.keys(entriesBySteno),
-          (steno) => -entriesBySteno[steno].length
-        ).map((steno) => {
-          const outlines = entriesBySteno[steno]
-          return (
-            <Link
-              to={`/entries/${layoutName}/${encodeURIComponent(
-                steno
-              )}/${encodeURIComponent(data.search.translation!.translation)}`}
-              key={data.search.translation!.translation}
-            >
-              <div
-                className="grid grid-cols-4 py-2 px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md"
-                key={steno}
-              >
-                <div className="font-mono text-xl">{steno}</div>
-                <div className="col-span-3">
-                  {outlines.map((entry) => (
-                    <div className="my-1" key={entry.uid}>
-                      <DictLink
-                        dict={entry.dictionary!}
-                        className="text-right"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+      <OutlineList
+        layout={layoutName!}
+        translation={data!.search.translation!.translation}
+        outlines={data!.entries_ranked!}
+      />
     </>
   ) : (
     <Error err={error} />

@@ -10,7 +10,7 @@ class OutlineResource(Resource):
       entries = Entry.query.filter_by(outline=ol).all()
 
       return {
-        "layout": Layout.schema.dump(tl.layout),
+        "layout": Layout.schema.dump(ol.layout),
         "outline": Outline.full_schema.dump(ol),
         "entries": [Entry.list_schema.dump(e) for e in entries],
       }

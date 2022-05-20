@@ -27,10 +27,12 @@ export interface User extends Item, CreatedTime {
   dictionaries?: Dictionary[]
 }
 
+export type Visibility = "public" | "unlisted" | "private"
+
 export interface Dictionary extends Item, CreatedTime, UpdatedTime {
   name: string
   user: User
-  visibility: "public" | "unlisted" | "private"
+  visibility: Visibility
   proprietary: boolean
   theory?: Theory
   num_entries: number
@@ -49,10 +51,30 @@ export interface Translation extends Item {
   layout?: Layout
 }
 
+export type EntryStatus =
+  | "unknown"
+  | "mandatory"
+  | "recommended"
+  | "preferred"
+  | "correct"
+  | "misstroke"
+
+export type Derivation =
+  | "unknown"
+  | "phonetic"
+  | "semi_phonetic"
+  | "orthographic"
+  | "skeletal"
+  | "shape_based"
+  | "arbitrary"
+  | "phrase"
+
 export interface Entry extends Item, CreatedTime {
   outline: Outline
   translation: Translation
   dictionary?: Dictionary
+  status: EntryStatus
+  derivation: Derivation
 }
 
 export interface EntryResults {
@@ -66,10 +88,18 @@ export interface SearchQuery {
   translation?: Translation
 }
 
+export interface Related {
+  outline?: string
+  translation?: string
+  score: number
+  entries: Entry[]
+}
+
 export interface SearchResults {
   layout: Layout
   search: SearchQuery
-  entries: Entry[]
+  entries?: Entry[]
+  entries_ranked?: Related[]
 }
 
 export interface OutlineResults {
@@ -85,8 +115,8 @@ export interface TranslationResults {
 }
 
 export interface EntryRelated {
-  outline: Entry[]
-  translation: Entry[]
+  outline: Related[]
+  translation: Related[]
 }
 
 export interface EntryDetails {

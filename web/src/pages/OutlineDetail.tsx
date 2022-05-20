@@ -1,14 +1,12 @@
-import * as _ from "lodash"
 import { useCallback, useMemo } from "react"
 import { useParams } from "react-router"
-import { Link } from "react-router-dom"
 
-import { Entry, SearchResults } from "src/api/models"
-import { EntryCounter, TranslationCounter } from "src/components/Counter"
+import { SearchResults } from "src/api/models"
 import DictLink from "src/components/DictLink"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
 import OutlineInfo from "src/components/OutlineInfo"
+import TranslationList from "src/components/TranslationList"
 import { useApiQuery } from "src/utils/hooks"
 
 type Params = {
@@ -32,14 +30,6 @@ export default function OutlineDetail() {
     )
   )
 
-  const entriesByTranslation = useMemo(
-    () =>
-      data
-        ? _.groupBy(data.entries, (e: Entry) => e.translation.translation)
-        : {},
-    [data]
-  )
-
   const layoutName: string | undefined = useMemo(
     () => (data ? data.layout!.short_name : undefined),
     [data]
@@ -50,43 +40,11 @@ export default function OutlineDetail() {
   ) : data ? (
     <>
       <OutlineInfo outline={data.search.outline!} />
-      <div>
-        <EntryCounter number={data.entries.length} className="font-semibold" />,{" "}
-        <TranslationCounter
-          number={Object.keys(entriesByTranslation).length}
-          className="font-semibold"
-        />
-      </div>
-      <div className="my-6">
-        {_.sortBy(
-          Object.keys(entriesByTranslation),
-          (tl) => -entriesByTranslation[tl].length
-        ).map((tl) => {
-          const entries = entriesByTranslation[tl]
-          return (
-            <Link
-              to={`/entries/${layoutName}/${encodeURIComponent(
-                data.search.outline!.steno
-              )}/${encodeURIComponent(tl)}`}
-              key={tl}
-            >
-              <div className="grid grid-cols-4 py-2 px-2 mx-[-0.5rem] hover:bg-gray-200 hover:rounded-md">
-                <div className="text-xl">{tl}</div>
-                <div className="col-span-3">
-                  {entries.map((entry) => (
-                    <div className="my-1" key={entry.uid}>
-                      <DictLink
-                        dict={entry.dictionary!}
-                        className="text-right"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
+      <TranslationList
+        layout={layoutName!}
+        steno={data!.search.outline!.steno}
+        translations={data!.entries_ranked!}
+      />
     </>
   ) : (
     <Error err={error} />

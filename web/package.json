@@ -44,7 +44,6 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-table": "^7.7.12",
     "autoprefixer": "^10.4.7",
-    "lodash": "^4.17.21",
     "postcss": "^8.4.13",
     "react-country-flag": "^3.0.2",
     "react-icons": "^4.3.1",
