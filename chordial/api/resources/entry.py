@@ -21,7 +21,7 @@ class EntryResource(Resource):
           "translation": [Entry.schema.dump(e) for e in same_translation],
         },
       }
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No entry with ID {entry_id}")
 
 class EntriesResource(Resource):
   @params(
@@ -56,4 +56,5 @@ class EntriesResource(Resource):
         "entries": [Entry.schema.dump(e) for e in entries],
       }
 
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND,
+      message=f"Steno '{steno}' and translation '{translation}' not found")

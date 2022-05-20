@@ -10,7 +10,7 @@ class TheoryResource(Resource):
   def get(self, theory_id):
     if t := Theory.with_id(theory_id):
       return Theory.schema.dump(t)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No theory with ID {theory_id}")
 
 class TheoriesResource(Resource):
   @params(name=fields.Str())
@@ -18,7 +18,7 @@ class TheoriesResource(Resource):
     if name:
       if t := Theory.with_short_name(name):
         return redirect(url_for("theory", theory_id=t.id))
-      abort(HTTPStatus.NOT_FOUND)
+      abort(HTTPStatus.NOT_FOUND, message=f"Theory {name} does not exist")
     return [Theory.schema.dump(t) for t in Theory.all()]
 
   @admin_required

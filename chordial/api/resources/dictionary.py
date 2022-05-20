@@ -23,7 +23,7 @@ class DictionaryResource(Resource):
       if (g.id != d.user_id
           and d.visibility == Visibility.private
           and not g.is_admin):
-        abort(HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")
       should_hide_entries = d.proprietary and not g.is_admin
       if format == DictionaryFormat.json:
         if should_hide_entries:
@@ -38,7 +38,7 @@ class DictionaryResource(Resource):
         return Dictionary.schema.dump(d) | {"num_entries": count}
       else:
         abort(HTTPStatus.BAD_REQUEST, message=f"Unrecognized format {format}")
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")
 
   @login_required
   def post(self, dict_id):
@@ -56,14 +56,15 @@ class DictionaryResource(Resource):
         abort(HTTPStatus.BAD_REQUEST, message=f"Invalid JSON")
 
       return import_steno_dictionary(dic, d)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")
 
 class DictionariesResource(Resource):
   @params(username=fields.Str(required=True), name=fields.Str(required=True))
   def get(self, username, name):
     if d := Dictionary.with_name(username, name):
       return redirect(url_for("dict", dict_id=d.id))
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND,
+      message=f"Dictionary {username}/{name} does not exist")
 
   @login_required
   @json_params(

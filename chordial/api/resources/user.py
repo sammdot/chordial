@@ -13,7 +13,7 @@ class UserResource(Resource):
         return User.full_schema.dump(u)
       else:
         return User.schema.dump(u)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No user with ID {user_id}")
 
 class UsersResource(Resource):
   @params(name=fields.Str())
@@ -21,11 +21,11 @@ class UsersResource(Resource):
     if name:
       if u := User.with_username(name):
         return redirect(url_for("user", user_id=u.id))
-      abort(HTTPStatus.NOT_FOUND)
+      abort(HTTPStatus.NOT_FOUND, message=f"User {name} does not exist")
     elif g.is_admin:
       return [User.schema.dump(u) for u in User.all()]
     else:
-      abort(HTTPStatus.FORBIDDEN)
+      abort(HTTPStatus.FORBIDDEN, message=f"Admin permissions required")
 
   @json_params(
     username=fields.Str(required=True),
@@ -63,4 +63,4 @@ class UserVerifyResource(Resource):
       u.email_verify_expiry_time = None
       u.save()
       return User.verify_schema.dump(u)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No user with ID {user_id}")

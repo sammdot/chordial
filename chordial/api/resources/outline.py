@@ -15,4 +15,4 @@ class OutlineResource(Resource):
         "entries": [Entry.list_schema.dump(e) for e in entries],
       }
 
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No outline with ID {outline_id}")

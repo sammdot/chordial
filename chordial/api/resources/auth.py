@@ -22,7 +22,7 @@ class AuthResource(Resource):
   def get(self):
     if u := User.with_id(g.id):
       return User.auth_schema.dump(u)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No user with ID {g.id}")
 
   @login_required
   def delete(self):

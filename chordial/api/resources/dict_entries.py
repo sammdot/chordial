@@ -36,4 +36,4 @@ class DictionaryEntriesResource(Resource):
         "offset": offset,
         "entries": [Entry.schema.dump(e) for e in entries],
       }
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")

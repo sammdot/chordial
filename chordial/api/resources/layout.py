@@ -10,7 +10,7 @@ class LayoutResource(Resource):
   def get(self, layout_id):
     if l := Layout.with_id(layout_id):
       return Layout.schema.dump(l)
-    abort(HTTPStatus.NOT_FOUND)
+    abort(HTTPStatus.NOT_FOUND, message=f"No layout with ID {layout_id}")
 
 class LayoutsResource(Resource):
   @params(name=fields.Str())
@@ -18,7 +18,7 @@ class LayoutsResource(Resource):
     if name:
       if l := Layout.with_short_name(name):
         return redirect(url_for("layout", layout_id=l.id))
-      abort(HTTPStatus.NOT_FOUND)
+      abort(HTTPStatus.NOT_FOUND, message=f"No layout with ID {layout_id}")
     return [Layout.schema.dump(l) for l in Layout.all()]
 
   @admin_required
