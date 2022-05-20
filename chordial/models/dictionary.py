@@ -22,13 +22,15 @@ class Dictionary(Base, IdMixin(6), TimestampMixin):
     ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
   user_id = Column(BigInteger,
     ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+  theory_id = Column(BigInteger,
+    ForeignKey("theories.id", ondelete="CASCADE"))
   visibility = Column(Enum(Visibility), default=Visibility.public)
   proprietary = Column(Boolean, default=False)
 
   layout = relationship("Layout")
   user = relationship("User", backref=backref(
     "dictionaries", cascade="all, delete-orphan", passive_deletes=True))
-  theory = relationship("Theory", backref="official_dictionary", uselist=False)
+  theory = relationship("Theory", backref="official_dictionaries")
 
   __table_args__ = (
     UniqueConstraint("user_id", "name", name="unique_per_user"),
@@ -62,7 +64,7 @@ class DictionarySchema(BaseSchema):
   visibility = EnumField(Visibility)
   layout = Nested("LayoutSchema", exclude=("theories",))
   user = Nested("UserSchema", exclude=("dictionaries",))
-  theory = Nested("TheorySchema", exclude=("official_dictionary", "layout"))
+  theory = Nested("TheorySchema", exclude=("official_dictionaries", "layout"))
 
   num_entries = Function(lambda row: (
     current_app.session.execute(

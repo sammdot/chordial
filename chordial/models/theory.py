@@ -1,6 +1,7 @@
 from marshmallow_sqlalchemy.fields import Nested
 from sqlalchemy import BigInteger, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
+from sqlalchemy_utils import JSONType as JSON
 
 from chordial.models.base import Base, BaseSchema
 from chordial.models.layout import Layout
@@ -13,8 +14,7 @@ class Theory(Base, IdMixin(4)):
   display_name = Column(String, nullable=False, unique=True)
   layout_id = Column(BigInteger,
     ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
-  official_dictionary_id = Column(BigInteger,
-    ForeignKey("dictionaries.id", ondelete="SET NULL"))
+  rules = Column(JSON)
 
   layout = relationship("Layout", backref="theories")
 
@@ -35,7 +35,7 @@ class TheorySchema(BaseSchema):
     model = Theory
 
   layout = Nested("LayoutSchema", exclude=("theories",))
-  official_dictionary = Nested(
-    "DictionarySchema", exclude=("user", "layout", "theory"))
+  official_dictionaries = Nested(
+    "DictionarySchema", many=True, exclude=("user", "layout", "theory"))
 
 Theory.schema = TheorySchema()
