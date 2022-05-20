@@ -3,10 +3,10 @@ from itertools import groupby
 from chordial.models.enums import EntryStatus
 
 ENTRY_STATUS_TO_RANK = {
-  "mandatory": 3,
-  "recommended": 2,
-  "preferred": 1,
-  "misstroke": -5,
+  EntryStatus.mandatory: 3,
+  EntryStatus.recommended: 2,
+  EntryStatus.preferred: 1,
+  EntryStatus.misstroke: -5,
 }
 
 def steno(entry):
@@ -20,7 +20,7 @@ def score(entries):
   for entry in entries:
     total += (
       (3 if entry.dictionary.theory else 1) +
-      ENTRY_STATUS_TO_RANK.get(entry.status.value, 0))
+      ENTRY_STATUS_TO_RANK.get(entry.status, 0))
   return total
 
 def display_name(entry):
