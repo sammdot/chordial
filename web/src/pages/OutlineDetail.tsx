@@ -2,7 +2,6 @@ import { useCallback, useMemo } from "react"
 import { useParams } from "react-router"
 
 import { SearchResults } from "src/api/models"
-import DictLink from "src/components/DictLink"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
 import OutlineInfo from "src/components/OutlineInfo"
