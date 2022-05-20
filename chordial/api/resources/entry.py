@@ -40,6 +40,15 @@ class EntryResource(Resource):
       }
     abort(HTTPStatus.NOT_FOUND, message=f"No entry with ID {entry_id}")
 
+class EntryByIdsResource(Resource):
+  def get(self, outline_id, translation_id):
+    print(outline_id, translation_id)
+    if e := Entry.query.filter_by(
+        outline_id=outline_id, translation_id=translation_id).first():
+      return redirect(url_for("entry", entry_id=e.id))
+    abort(HTTPStatus.NOT_FOUND,
+      message=f"No entry with outline {outline_id} and translation {translation_id}")
+
 class EntriesResource(Resource):
   @params(
     layout=fields.Str(required=True),

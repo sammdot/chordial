@@ -4,7 +4,11 @@ from chordial.api.resources.dictionary import (
   DictionariesResource,
 )
 from chordial.api.resources.dict_entries import DictionaryEntriesResource
-from chordial.api.resources.entry import EntryResource, EntriesResource
+from chordial.api.resources.entry import (
+  EntryResource,
+  EntryByIdsResource,
+  EntriesResource,
+)
 from chordial.api.resources.layout import LayoutResource, LayoutsResource
 from chordial.api.resources.outline import OutlineResource
 from chordial.api.resources.theory import TheoryResource, TheoriesResource

@@ -4,7 +4,7 @@ from chordial.api.resources import (
   AuthResource,
   DictionaryEntriesResource,
   DictionaryResource, DictionariesResource,
-  EntryResource, EntriesResource,
+  EntryResource, EntryByIdsResource, EntriesResource,
   LayoutResource, LayoutsResource,
   OutlineResource,
   TheoryResource, TheoriesResource,
@@ -19,6 +19,7 @@ api.add_resource(DictionaryEntriesResource, "/dicts/<uid6:dict_id>/entries", end
 api.add_resource(DictionaryResource, "/dicts/<uid6:dict_id>", endpoint="dict")
 api.add_resource(DictionariesResource, "/dicts")
 api.add_resource(EntryResource, "/entries/<uid10:entry_id>", endpoint="entry")
+api.add_resource(EntryByIdsResource, "/entries/<uid8:outline_id>/<uid8:translation_id>")
 api.add_resource(EntriesResource, "/entries")
 api.add_resource(LayoutResource, "/layouts/<uid4:layout_id>", endpoint="layout")
 api.add_resource(LayoutsResource, "/layouts")

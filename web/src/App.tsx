@@ -9,7 +9,9 @@ import UserProfile from "src/components/UserProfile"
 import DictDetail from "src/pages/DictDetail"
 import EntryDetail from "src/pages/EntryDetail"
 import OutlineDetail from "src/pages/OutlineDetail"
-import PermalinkRedirect from "src/pages/PermalinkRedirect"
+import PermalinkRedirect, {
+  EntryPermalinkRedirect,
+} from "src/pages/PermalinkRedirect"
 import TranslationDetail from "src/pages/TranslationDetail"
 import UserDetail from "src/pages/UserDetail"
 import { useAuth } from "src/utils/hooks"
@@ -36,6 +38,7 @@ export default function App() {
             path="/ol/:uid"
             element={<PermalinkRedirect type="outline" />}
           />
+          <Route path="/e/:olid/:tlid" element={<EntryPermalinkRedirect />} />
           <Route
             path="/entries/:layout/:steno/:translation"
             element={<EntryDetail />}

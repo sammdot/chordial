@@ -120,6 +120,7 @@ export interface EntryRelated {
 }
 
 export interface EntryDetails {
+  layout?: Layout
   entry: Entry
   related: EntryRelated
 }

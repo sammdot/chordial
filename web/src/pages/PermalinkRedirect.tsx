@@ -3,9 +3,11 @@ import { useNavigate, useParams } from "react-router"
 
 import {
   Dictionary,
-  User,
+  Entry,
+  EntryDetails,
   OutlineResults,
   TranslationResults,
+  User,
 } from "src/api/models"
 import Error from "src/components/Error"
 import Loader from "src/components/Loader"
@@ -76,6 +78,39 @@ export default function PermalinkRedirect({ type }: Props) {
       }
     }
   }, [loading, data, type, navigateTo])
+
+  return loading ? <Loader /> : error ? <Error err={error} /> : <></>
+}
+
+type EntryPermalinkParams = {
+  olid: string
+  tlid: string
+}
+
+export function EntryPermalinkRedirect() {
+  const navigateTo = useNavigate()
+  const { olid, tlid } = useParams<EntryPermalinkParams>()
+  const { loading, data, error } = useApiQuery<EntryDetails | undefined>(
+    useCallback(
+      (api) => {
+        let url = `/entries/${olid!}/${tlid!}`
+        if (url) {
+          return api.get(url!)
+        }
+        return Promise.resolve(undefined)
+      },
+      [olid, tlid]
+    )
+  )
+
+  useEffect(() => {
+    if (!loading && data) {
+      let url = `/entries/${data.layout!.short_name}/${encodeURIComponent(
+        data.entry.outline.steno
+      )}/${encodeURIComponent(data.entry.translation.translation)}`
+      navigateTo(url!, { replace: true })
+    }
+  }, [loading, data, navigateTo])
 
   return loading ? <Loader /> : error ? <Error err={error} /> : <></>
 }
