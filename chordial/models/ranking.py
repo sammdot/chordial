@@ -23,9 +23,12 @@ def score(entries):
       ENTRY_STATUS_TO_RANK.get(entry.status.value, 0))
   return total
 
+def display_name(entry):
+  return f"{entry.dictionary.user.username}/{entry.dictionary.name}"
+
 def rank_by_outline(entries):
   grouped_entries = [
-    (steno, list(lst)) for steno, lst in
+    (steno, sorted(lst, key=display_name)) for steno, lst in
     groupby(sorted(entries, key=steno), key=steno)]
   return sorted([
     (score(lst), steno, lst) for steno, lst in grouped_entries
@@ -33,7 +36,7 @@ def rank_by_outline(entries):
 
 def rank_by_translation(entries):
   grouped_entries = [
-    (tl, list(lst)) for tl, lst in
+    (tl, sorted(lst, key=display_name)) for tl, lst in
     groupby(sorted(entries, key=translation), key=translation)]
   return sorted([
     (score(lst), tl, lst) for tl, lst in grouped_entries
