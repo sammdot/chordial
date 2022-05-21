@@ -1,4 +1,5 @@
 from chordial.api.resources.auth import AuthResource
+from chordial.api.resources.analysis import AnalysisResource
 from chordial.api.resources.dictionary import (
   DictionaryResource,
   DictionariesResource,

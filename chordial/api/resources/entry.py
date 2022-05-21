@@ -42,7 +42,6 @@ class EntryResource(Resource):
 
 class EntryByIdsResource(Resource):
   def get(self, outline_id, translation_id):
-    print(outline_id, translation_id)
     if e := Entry.query.filter_by(
         outline_id=outline_id, translation_id=translation_id).first():
       return redirect(url_for("entry", entry_id=e.id))
