@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react"
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import ReactPaginate from "react-paginate"
 import { useParams } from "react-router"
 import { Link } from "react-router-dom"
@@ -98,22 +99,20 @@ export default function DictDetail() {
       <DictInfo dict={data} />
       <ReactPaginate
         breakLabel="•••"
-        previousLabel="←"
-        nextLabel="→"
+        previousLabel={<FaChevronLeft />}
+        nextLabel={<FaChevronRight />}
         onPageChange={({ selected: page }) => goto(page)}
         disableInitialCallback={true}
         pageRangeDisplayed={5}
         pageCount={pageCount}
         className="mt-6 text-center font-medium"
-        previousClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-l rounded-l-md"
+        previousClassName="py-2 px-2 translate-y-3 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-l rounded-l-md"
         pageClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
         breakClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y"
-        nextClassName="py-1 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-r rounded-r-md"
+        nextClassName="py-2 px-2 translate-y-3 inline-block select-none hover:bg-gray-200 border-gray-400 border-y border-r rounded-r-md"
         activeClassName="bg-brand text-white hover:bg-brand"
-        previousLinkClassName="px-3 py-2.5 leading-6"
         pageLinkClassName="px-3 py-2.5 leading-6"
         breakLinkClassName="px-3 py-2.5 leading-6"
-        nextLinkClassName="px-3 py-2.5 leading-6"
         disabledClassName="text-gray-400 hover:bg-white"
         renderOnZeroPageCount={() => null}
       />
