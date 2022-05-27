@@ -16,25 +16,32 @@ from chordial.models import (
 from chordial.utils.logging import log
 from chordial.utils.params import fields, json_params, params
 
+
 class DictionaryResource(Resource):
   @params(format=EnumField(DictionaryFormat))
   def get(self, dict_id, format=None):
     if d := Dictionary.with_id(dict_id):
-      if (g.id != d.user_id
-          and d.visibility == Visibility.private
-          and not g.is_admin):
+      if (
+        g.id != d.user_id
+        and d.visibility == Visibility.private
+        and not g.is_admin
+      ):
         abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")
       should_hide_entries = d.proprietary and not g.is_admin
       if format == DictionaryFormat.json:
         if should_hide_entries:
-          abort(HTTPStatus.FORBIDDEN,
-            message="Proprietary dictionaries may not be downloaded")
+          abort(
+            HTTPStatus.FORBIDDEN,
+            message="Proprietary dictionaries may not be downloaded",
+          )
         else:
           return d.to_json()
       elif format is None:
         count = (
           current_app.session.query(func.count(Entry.id))
-            .filter(Entry.dictionary_id == dict_id).scalar())
+          .filter(Entry.dictionary_id == dict_id)
+          .scalar()
+        )
         return Dictionary.schema.dump(d) | {"num_entries": count}
       else:
         abort(HTTPStatus.BAD_REQUEST, message=f"Unrecognized format {format}")
@@ -45,11 +52,15 @@ class DictionaryResource(Resource):
     if d := Dictionary.with_id(dict_id):
       if d.user.is_system:
         if not g.is_admin:
-          abort(HTTPStatus.FORBIDDEN,
-            message=f"Admin permissions required for system dictionaries")
+          abort(
+            HTTPStatus.FORBIDDEN,
+            message=f"Admin permissions required for system dictionaries",
+          )
       elif d.user.id != g.id:
-        abort(HTTPStatus.FORBIDDEN,
-          message=f"Not allowed to import dictionaries for other users")
+        abort(
+          HTTPStatus.FORBIDDEN,
+          message=f"Not allowed to import dictionaries for other users",
+        )
 
       dic = request.get_json(force=True, silent=True)
       if not dic:
@@ -58,13 +69,16 @@ class DictionaryResource(Resource):
       return import_steno_dictionary(dic, d)
     abort(HTTPStatus.NOT_FOUND, message=f"No dictionary with ID {dict_id}")
 
+
 class DictionariesResource(Resource):
   @params(username=fields.Str(required=True), name=fields.Str(required=True))
   def get(self, username, name):
     if d := Dictionary.with_name(username, name):
       return redirect(url_for("dict", dict_id=d.id))
-    abort(HTTPStatus.NOT_FOUND,
-      message=f"Dictionary {username}/{name} does not exist")
+    abort(
+      HTTPStatus.NOT_FOUND,
+      message=f"Dictionary {username}/{name} does not exist",
+    )
 
   @login_required
   @json_params(
@@ -75,26 +89,41 @@ class DictionariesResource(Resource):
     visibility=EnumField(Visibility),
     proprietary=fields.Boolean(),
   )
-  def post(self, short_name, layout, username=None, display_name=None,
-      visibility=Visibility.public, proprietary=False):
+  def post(
+    self,
+    short_name,
+    layout,
+    username=None,
+    display_name=None,
+    visibility=Visibility.public,
+    proprietary=False,
+  ):
     if not username:
       username = g.user.username
     if u := User.with_username(username):
       if u.is_system:
         if not g.is_admin:
-          abort(HTTPStatus.FORBIDDEN,
-            message=f"Admin permissions required for system dictionaries")
+          abort(
+            HTTPStatus.FORBIDDEN,
+            message=f"Admin permissions required for system dictionaries",
+          )
       elif u.id != g.id:
-        abort(HTTPStatus.FORBIDDEN,
-          message=f"Not allowed to create dictionaries for other users")
+        abort(
+          HTTPStatus.FORBIDDEN,
+          message=f"Not allowed to create dictionaries for other users",
+        )
 
       if l := Layout.with_short_name(layout):
         if d := Dictionary.query.filter_by(user=u, name=short_name).first():
-          abort(HTTPStatus.BAD_REQUEST,
-            message=f"Dictionary {username}/{short_name} already exists")
+          abort(
+            HTTPStatus.BAD_REQUEST,
+            message=f"Dictionary {username}/{short_name} already exists",
+          )
         elif proprietary and not g.is_admin:
-          abort(HTTPStatus.BAD_REQUEST,
-            message=f"Only system dictionaries may be proprietary")
+          abort(
+            HTTPStatus.BAD_REQUEST,
+            message=f"Only system dictionaries may be proprietary",
+          )
 
         d = Dictionary(
           name=short_name,

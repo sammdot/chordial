@@ -6,16 +6,20 @@ from chordial.models.entry import Entry
 from chordial.models.outline import Outline
 from chordial.models.translation import Translation
 
+
 class ConflictResolution(Enum):
   overwrite = "overwrite"
   ignore = "ignore"
   restrict = "restrict"
 
+
 def noop(*args):
   pass
 
+
 class ImportCallbacks:
-  def __init__(self,
+  def __init__(
+    self,
     on_init_read=noop,
     on_read_dict=noop,
     on_init_delete=noop,
@@ -42,8 +46,11 @@ class ImportCallbacks:
     self.on_begin_commit = on_begin_commit
     self.on_end_commit = on_end_commit
 
+
 def import_steno_dictionary(
-  json: dict, dic: Dictionary, session,
+  json: dict,
+  dic: Dictionary,
+  session,
   callbacks=ImportCallbacks(),
   on_conflict=ConflictResolution.overwrite,
 ):
@@ -53,19 +60,26 @@ def import_steno_dictionary(
   translations = json.values()
 
   entries_in_db = {
-    o.steno: e for e, o in
-    session.query(Entry, Outline).join(Entry.outline)
-      .filter(Entry.dictionary == dic).filter(Outline.steno.in_(outlines)).all()
+    o.steno: e
+    for e, o in session.query(Entry, Outline)
+    .join(Entry.outline)
+    .filter(Entry.dictionary == dic)
+    .filter(Outline.steno.in_(outlines))
+    .all()
   }
   outlines_in_db = {
-    o.steno: o for o in
-    session.query(Outline).filter_by(layout=l)
-      .filter(Outline.steno.in_(outlines)).all()
+    o.steno: o
+    for o in session.query(Outline)
+    .filter_by(layout=l)
+    .filter(Outline.steno.in_(outlines))
+    .all()
   }
   translations_in_db = {
-    t.translation: t for t in
-    session.query(Translation).filter_by(layout=l)
-      .filter(Translation.translation.in_(translations)).all()
+    t.translation: t
+    for t in session.query(Translation)
+    .filter_by(layout=l)
+    .filter(Translation.translation.in_(translations))
+    .all()
   }
 
   entries_to_add = set()

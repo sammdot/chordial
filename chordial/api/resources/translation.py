@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from chordial.models import Entry, Layout, Translation
 
+
 class TranslationResource(Resource):
   def get(self, translation_id):
     if tl := Translation.with_id(translation_id):
@@ -15,5 +16,6 @@ class TranslationResource(Resource):
         "entries": [Entry.list_schema.dump(e) for e in entries],
       }
 
-    abort(HTTPStatus.NOT_FOUND,
-      message=f"No translation with ID {translation_id}")
+    abort(
+      HTTPStatus.NOT_FOUND, message=f"No translation with ID {translation_id}"
+    )

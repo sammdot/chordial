@@ -7,13 +7,15 @@ from chordial.models.base import Base, BaseSchema
 from chordial.models.layout import Layout
 from chordial.models.mixins import IdMixin
 
+
 class Theory(Base, IdMixin(4)):
   __tablename__ = "theories"
 
   short_name = Column(String, nullable=False, unique=True)
   display_name = Column(String, nullable=False, unique=True)
-  layout_id = Column(BigInteger,
-    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
+  layout_id = Column(
+    BigInteger, ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False
+  )
   rules = Column(JSON)
 
   layout = relationship("Layout", backref="theories")
@@ -30,12 +32,15 @@ class Theory(Base, IdMixin(4)):
   def all():
     return Theory.query.all()
 
+
 class TheorySchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Theory
 
   layout = Nested("LayoutSchema", exclude=("theories",))
   official_dictionaries = Nested(
-    "DictionarySchema", many=True, exclude=("user", "layout", "theory"))
+    "DictionarySchema", many=True, exclude=("user", "layout", "theory")
+  )
+
 
 Theory.schema = TheorySchema()

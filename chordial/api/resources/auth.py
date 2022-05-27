@@ -2,12 +2,20 @@ from http import HTTPStatus
 from flask import g, make_response, request
 from flask_restful import abort, Resource
 
-from chordial.api.auth import login_required, set_cookies, token_for, unset_cookies
+from chordial.api.auth import (
+  login_required,
+  set_cookies,
+  token_for,
+  unset_cookies,
+)
 from chordial.models import User
 from chordial.utils.params import fields, json_params
 
+
 class AuthResource(Resource):
-  @json_params(username=fields.Str(required=True), password=fields.Str(required=True))
+  @json_params(
+    username=fields.Str(required=True), password=fields.Str(required=True)
+  )
   def post(self, username, password):
     if user := User.with_username(username):
       if user.password == password:

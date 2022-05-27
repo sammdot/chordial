@@ -8,6 +8,7 @@ from chordial.utils.console import print_table
 from chordial.utils.database import connect
 from chordial.utils.logging import ChordialLogger
 
+
 @group("db")
 @option("--verbose/--no-verbose", "-v")
 @pass_obj
@@ -15,12 +16,15 @@ def db(ctx, verbose):
   ctx.engine, _ = connect(ctx.config.DATABASE_URL)
   if verbose:
     ChordialLogger.config(
-      logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None)
+      logging.getLogger("sqlalchemy.engine"), logging.INFO, True, None
+    )
+
 
 @db.command("create")
 @pass_obj
 def create_db(ctx):
   Base.metadata.create_all(ctx.engine)
+
 
 @db.command("query")
 @option("--file", "-f", type=File("r"), default=sys.stdin)
@@ -41,6 +45,7 @@ def query_db(ctx, file, query=None):
     else:
       rows = cur.rowcount
       print(f"{rows} row{'' if rows == 1 else 's'} affected.")
+
 
 @db.command("drop")
 @pass_obj

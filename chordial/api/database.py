@@ -5,6 +5,7 @@ from sqlalchemy_utils import force_instant_defaults
 from chordial.models import Base
 from chordial.utils.database import connect
 
+
 def setup_database(app):
   app.engine, app.session = connect(app.config["DATABASE_URL"])
   Base.query = app.session.query_property()

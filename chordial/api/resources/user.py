@@ -6,6 +6,7 @@ from chordial.models import User
 from chordial.utils.datetime import now
 from chordial.utils.params import fields, json_params, params
 
+
 class UserResource(Resource):
   def get(self, user_id):
     if u := User.with_id(user_id):
@@ -14,6 +15,7 @@ class UserResource(Resource):
       else:
         return User.schema.dump(u)
     abort(HTTPStatus.NOT_FOUND, message=f"No user with ID {user_id}")
+
 
 class UsersResource(Resource):
   @params(name=fields.Str())
@@ -36,12 +38,15 @@ class UsersResource(Resource):
     if u := User.with_username(username):
       abort(HTTPStatus.BAD_REQUEST, message=f"User {username} already exists")
     if u := User.query.filter_by(email=email).first():
-      abort(HTTPStatus.BAD_REQUEST,
-        message=f"User with email {email} already exists")
+      abort(
+        HTTPStatus.BAD_REQUEST,
+        message=f"User with email {email} already exists",
+      )
     u = User(username=username, email=email, password=password)
     u.save()
     # TODO: Send email with verification token
     return User.verify_schema.dump(u)
+
 
 class UserVerifyResource(Resource):
   @json_params(

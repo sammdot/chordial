@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from chordial.models import Entry, Layout, Outline
 
+
 class OutlineResource(Resource):
   def get(self, outline_id):
     if ol := Outline.with_id(outline_id):

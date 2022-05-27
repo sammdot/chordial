@@ -12,15 +12,23 @@ import sys
 
 LOG_FORMAT = "{levelname:1.1}{asctime} {process}/{threadName} {filename}:{lineno}] {message}"
 DATE_FORMAT = "%m%d %H:%M:%S"
-ACCESS_FORMAT = "{levelname:1.1}{asctime} {process}/{threadName} access.log:0] {message}"
+ACCESS_FORMAT = (
+  "{levelname:1.1}{asctime} {process}/{threadName} access.log:0] {message}"
+)
 
-WRONG_CALLERS = [os.path.normcase(f) for f in [
-  logging.__file__,
-  glogging.__file__,
-  __file__,
-]]
+WRONG_CALLERS = [
+  os.path.normcase(f)
+  for f in [
+    logging.__file__,
+    glogging.__file__,
+    __file__,
+  ]
+]
+
+
 def is_wrong_caller(filename):
   return filename in WRONG_CALLERS
+
 
 # Modified from CPython's implementation, but also takes care of
 # Gunicorn's logging layer
@@ -44,30 +52,36 @@ def find_caller(stack_info=False, stacklevel=1):
     sinfo = None
     if stack_info:
       sio = io.StringIO()
-      sio.write('Stack (most recent call last):\n')
+      sio.write("Stack (most recent call last):\n")
       traceback.print_stack(f, file=sio)
       sinfo = sio.getvalue()
-      if sinfo[-1] == '\n':
+      if sinfo[-1] == "\n":
         sinfo = sinfo[:-1]
       sio.close()
     rv = (co.co_filename, f.f_lineno, co.co_name, sinfo)
     break
   return rv
 
+
 class ChordialGunicornLogger(glogging.Logger):
   def setup(self, cfg):
     super().setup(cfg)
     self._set_handler(
-      self.error_log, cfg.errorlog,
-      fmt=Formatter(LOG_FORMAT, DATE_FORMAT, style="{"))
+      self.error_log,
+      cfg.errorlog,
+      fmt=Formatter(LOG_FORMAT, DATE_FORMAT, style="{"),
+    )
     if cfg.accesslog:
       self._set_handler(
-        self.access_log, cfg.accesslog,
+        self.access_log,
+        cfg.accesslog,
         fmt=Formatter(ACCESS_FORMAT, DATE_FORMAT, style="{"),
-        stream=sys.stdout)
+        stream=sys.stdout,
+      )
 
     self.error_log.findCaller = find_caller
     self.access_log.findCaller = find_caller
+
 
 class ChordialLogger(Logger):
   def __init__(self):
@@ -83,5 +97,6 @@ class ChordialLogger(Logger):
       handler = FileHandler(log_file)
     handler.setFormatter(Formatter(LOG_FORMAT, DATE_FORMAT, style="{"))
     self.addHandler(handler)
+
 
 log = ChordialLogger()

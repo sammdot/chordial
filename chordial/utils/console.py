@@ -13,15 +13,21 @@ PROGRESS_COLUMNS = [
   TaskProgressColumn(
     " [progress.percentage]{task.completed:>9,} / {task.total:>9,}",
     "",
-    justify="right")
+    justify="right",
+  ),
 ]
+
 
 def ProgressBar():
   return Progress(*PROGRESS_COLUMNS)
 
+
 INITIAL_ZEROS = re.compile("^(0+)")
+
+
 def replace_initial_zeros(uid):
   return INITIAL_ZEROS.sub(lambda m: ("\xb7" * len(m.group())), uid)
+
 
 def render_for_console(item, column_name):
   if item is None:
@@ -38,18 +44,22 @@ def render_for_console(item, column_name):
     return "[grey78]<encrypted>[/grey78]"
   return item
 
+
 def print_table(column_names, rows):
   table = Table()
   for col in column_names:
     table.add_column(col)
   for row in rows:
-    table.add_row(*(render_for_console(field, col)
-      for field, col in zip(row, column_names)))
+    table.add_row(
+      *(render_for_console(field, col) for field, col in zip(row, column_names))
+    )
   console = Console()
   console.print(table)
+
 
 def click_callback(fn):
   @wraps(fn)
   def wrapper(_, __, s):
     return fn(s)
+
   return wrapper

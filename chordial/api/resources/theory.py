@@ -6,11 +6,13 @@ from chordial.api.auth import admin_required
 from chordial.models import Layout, Theory
 from chordial.utils.params import fields, json_params, params
 
+
 class TheoryResource(Resource):
   def get(self, theory_id):
     if t := Theory.with_id(theory_id):
       return Theory.schema.dump(t)
     abort(HTTPStatus.NOT_FOUND, message=f"No theory with ID {theory_id}")
+
 
 class TheoriesResource(Resource):
   @params(name=fields.Str())
@@ -29,8 +31,9 @@ class TheoriesResource(Resource):
   )
   def post(self, short_name, layout, display_name=None):
     if t := Theory.with_short_name(short_name):
-      abort(HTTPStatus.BAD_REQUEST,
-        message=f"Theory {short_name} already exists")
+      abort(
+        HTTPStatus.BAD_REQUEST, message=f"Theory {short_name} already exists"
+      )
     if l := Layout.with_short_name(layout):
       t = Theory(
         short_name=short_name,

@@ -20,6 +20,7 @@ from chordial.utils.uid import encode
 
 jwt = JWTManager()
 
+
 def setup_auth(app):
   @app.before_request
   def populate_user():
@@ -45,8 +46,10 @@ def setup_auth(app):
     except (RuntimeError, KeyError):
       return response
 
+
 def token_for(user, claims=None):
   return create_access_token(identity=user.id, additional_claims=claims)
+
 
 def login_required(fn):
   @wraps(fn)
@@ -56,7 +59,9 @@ def login_required(fn):
       return fn(*args, **kwargs)
     except NoAuthorizationError:
       abort(HTTPStatus.UNAUTHORIZED, message="Authorization required")
+
   return wrapper
+
 
 def admin_required(fn):
   @wraps(fn)
@@ -69,7 +74,9 @@ def admin_required(fn):
         abort(HTTPStatus.FORBIDDEN, message="Admin permissions required")
     except NoAuthorizationError:
       abort(HTTPStatus.UNAUTHORIZED, message="Authorization required")
+
   return wrapper
+
 
 set_cookies = set_access_cookies
 unset_cookies = unset_jwt_cookies

@@ -8,11 +8,13 @@ from chordial.models.base import Base, BaseSchema
 from chordial.models.layout import Layout
 from chordial.models.mixins import IdMixin
 
+
 class Outline(Base, IdMixin(8)):
   __tablename__ = "outlines"
 
-  layout_id = Column(BigInteger,
-    ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False)
+  layout_id = Column(
+    BigInteger, ForeignKey("layouts.id", ondelete="RESTRICT"), nullable=False
+  )
   steno = Column(String, nullable=False)
 
   layout = relationship("Layout")
@@ -37,14 +39,17 @@ class Outline(Base, IdMixin(8)):
   def with_steno(steno, layout):
     return Outline.query.filter_by(layout=layout, steno=steno).first()
 
+
 class OutlineSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = Outline
 
   steno_without_number = fields.Str()
 
+
 class OutlineFullSchema(OutlineSchema):
   layout = Nested("LayoutSchema")
+
 
 Outline.schema = OutlineSchema()
 Outline.full_schema = OutlineFullSchema()

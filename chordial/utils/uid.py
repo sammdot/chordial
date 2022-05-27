@@ -7,6 +7,7 @@ ALPHABET = string.digits + string.ascii_lowercase
 BASE = len(ALPHABET)
 LENGTH = 8
 
+
 def encode(id: int, length=LENGTH) -> str:
   s = ""
   num = id
@@ -15,11 +16,14 @@ def encode(id: int, length=LENGTH) -> str:
     num //= BASE
   return s.rjust(length, "0")
 
+
 def decode(id: str) -> int:
   return int(id, base=BASE)
 
+
 def generate_id(length=LENGTH) -> int:
   return decode("".join(random.choices(ALPHABET, k=length)))
+
 
 def uid_converter(length: int):
   class UniqueIdConverter(BaseConverter):
@@ -31,7 +35,9 @@ def uid_converter(length: int):
 
   return UniqueIdConverter
 
+
 VERIFY_TOKEN_LENGTH = 16
+
 
 def generate_verify_token():
   return secrets.token_urlsafe(VERIFY_TOKEN_LENGTH)

@@ -11,6 +11,7 @@ from chordial.models.mixins import IdMixin, TimestampMixin
 from chordial.utils.datetime import minutes_from_now
 from chordial.utils.uid import generate_verify_token
 
+
 class User(Base, IdMixin(6), TimestampMixin):
   __tablename__ = "users"
 
@@ -19,7 +20,9 @@ class User(Base, IdMixin(6), TimestampMixin):
   email = Column(Email, nullable=False)
   email_verified = Column(Boolean, default=False)
   email_verify_token = Column(String, default=generate_verify_token)
-  email_verify_expiry_time = Column(DateTime(timezone=True), default=minutes_from_now(15))
+  email_verify_expiry_time = Column(
+    DateTime(timezone=True), default=minutes_from_now(15)
+  )
   is_admin = Column(Boolean, default=False)
   is_system = Column(Boolean, default=False)
   password = Column(Password(schemes=["pbkdf2_sha512"]))
@@ -32,10 +35,11 @@ class User(Base, IdMixin(6), TimestampMixin):
     CheckConstraint(
       "email_verified OR (email_verify_token IS NOT NULL "
       "AND email_verify_expiry_time IS NOT NULL)",
-      name="verify_token_check"),
+      name="verify_token_check",
+    ),
     CheckConstraint(
-      "is_system OR password IS NOT NULL",
-      name="non_system_password_check"),
+      "is_system OR password IS NOT NULL", name="non_system_password_check"
+    ),
   )
 
   @property
@@ -45,35 +49,44 @@ class User(Base, IdMixin(6), TimestampMixin):
   @staticmethod
   def with_id(id: int):
     return (
-      User.query.options(joinedload(User.dictionaries))
-        .filter_by(id=id).first()
+      User.query.options(joinedload(User.dictionaries)).filter_by(id=id).first()
     )
 
   @staticmethod
   def with_username(username: str):
     return (
       User.query.options(joinedload(User.dictionaries))
-        .filter(User.username.ilike(f"%{username}%")).first()
+      .filter(User.username.ilike(f"%{username}%"))
+      .first()
     )
 
   @staticmethod
   def all():
     return User.query.all()
 
+
 class UserAuthSchema(BaseSchema):
   class Meta(BaseSchema.Meta):
     model = User
-    exclude = (BaseSchema.Meta.exclude +
-      ("password", "email_verify_token", "email_verify_expiry_time"))
+    exclude = BaseSchema.Meta.exclude + (
+      "password",
+      "email_verify_token",
+      "email_verify_expiry_time",
+    )
+
 
 class UserFullSchema(UserAuthSchema):
-  dictionaries = Nested(
-    "DictionarySchema", many=True, exclude=("user",))
+  dictionaries = Nested("DictionarySchema", many=True, exclude=("user",))
+
 
 class UserSchema(UserAuthSchema):
   dictionaries = Nested(
-    "DictionarySchema", attribute="public_dictionaries",
-    many=True, exclude=("user",))
+    "DictionarySchema",
+    attribute="public_dictionaries",
+    many=True,
+    exclude=("user",),
+  )
+
 
 class UserVerifySchema(BaseSchema):
   class Meta(BaseSchema.Meta):
@@ -81,6 +94,7 @@ class UserVerifySchema(BaseSchema):
     exclude = BaseSchema.Meta.exclude + ("password", "email_verified")
 
   needs_verification = fields.Function(lambda obj: not obj.email_verified)
+
 
 User.schema = UserSchema()
 User.full_schema = UserFullSchema()

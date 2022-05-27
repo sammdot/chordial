@@ -6,6 +6,7 @@ from chordial.models import Entry, Layout, Outline, Translation
 from chordial.models.ranking import rank_by_outline, rank_by_translation
 from chordial.utils.params import fields, params
 
+
 class EntryResource(Resource):
   def get(self, entry_id):
     if e := Entry.with_id(entry_id):
@@ -24,8 +25,9 @@ class EntryResource(Resource):
               "translation": translation,
               "entries": [Entry.schema.dump(e) for e in entries],
             }
-            for (score, translation, entries) in
-            rank_by_translation(same_outline)
+            for (score, translation, entries) in rank_by_translation(
+              same_outline
+            )
           ],
           "translation": [
             {
@@ -33,20 +35,24 @@ class EntryResource(Resource):
               "outline": outline,
               "entries": [Entry.schema.dump(e) for e in entries],
             }
-            for (score, outline, entries) in
-            rank_by_outline(same_translation)
+            for (score, outline, entries) in rank_by_outline(same_translation)
           ],
         },
       }
     abort(HTTPStatus.NOT_FOUND, message=f"No entry with ID {entry_id}")
 
+
 class EntryByIdsResource(Resource):
   def get(self, outline_id, translation_id):
     if e := Entry.query.filter_by(
-        outline_id=outline_id, translation_id=translation_id).first():
+      outline_id=outline_id, translation_id=translation_id
+    ).first():
       return redirect(url_for("entry", entry_id=e.id))
-    abort(HTTPStatus.NOT_FOUND,
-      message=f"No entry with outline {outline_id} and translation {translation_id}")
+    abort(
+      HTTPStatus.NOT_FOUND,
+      message=f"No entry with outline {outline_id} and translation {translation_id}",
+    )
+
 
 class EntriesResource(Resource):
   @params(
@@ -72,15 +78,19 @@ class EntriesResource(Resource):
       if translation:
         tl = Translation.with_text(translation, layout=l)
         if not tl:
-          abort(HTTPStatus.NOT_FOUND,
-            message=f"Translation '{translation}' not found")
+          abort(
+            HTTPStatus.NOT_FOUND,
+            message=f"Translation '{translation}' not found",
+          )
         search_params["translation"] = Translation.schema.dump(tl)
         q = q.filter_by(translation_id=tl.id)
         ok = True
 
       if not ok:
-        abort(HTTPStatus.BAD_REQUEST,
-          message="Must specify at least one of steno or translation")
+        abort(
+          HTTPStatus.BAD_REQUEST,
+          message="Must specify at least one of steno or translation",
+        )
 
       entries = q.all()
       response = {
@@ -97,8 +107,7 @@ class EntriesResource(Resource):
             "translation": translation,
             "entries": [Entry.schema.dump(e) for e in entries],
           }
-          for (score, translation, entries) in
-          rank_by_translation(entries)
+          for (score, translation, entries) in rank_by_translation(entries)
         ]
       elif translation:
         response["entries_ranked"] = [
@@ -107,11 +116,12 @@ class EntriesResource(Resource):
             "outline": outline,
             "entries": [Entry.schema.dump(e) for e in entries],
           }
-          for (score, outline, entries) in
-          rank_by_outline(entries)
+          for (score, outline, entries) in rank_by_outline(entries)
         ]
 
       return response
 
-    abort(HTTPStatus.NOT_FOUND,
-      message=f"Steno '{steno}' and translation '{translation}' not found")
+    abort(
+      HTTPStatus.NOT_FOUND,
+      message=f"Steno '{steno}' and translation '{translation}' not found",
+    )

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+
 class Config:
   DEBUG = True
   DATABASE_URL = "sqlite:///chordial.db"
@@ -23,11 +24,14 @@ class Config:
   JWT_SESSION_COOKIE = False
   JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 
+
 class DevelopmentConfig(Config):
   pass
 
+
 class StagingConfig(DevelopmentConfig):
   DEBUG = False
+  DATABASE_URL = "CHANGE_THIS"
 
   LOG_LEVEL = "info"
   LOG_TO_STDOUT = False
@@ -35,10 +39,18 @@ class StagingConfig(DevelopmentConfig):
   JWT_COOKIE_SECURE = True
   JWT_SECRET_KEY = "CHANGE_THIS"
 
+
 class ProductionConfig(StagingConfig):
+  DATABASE_URL = "CHANGE_THIS"
+
   JWT_SECRET_KEY = "CHANGE_THIS"
+
 
 def config_for(env):
   return (
-    ProductionConfig if env == "production" else
-      StagingConfig if env == "staging" else DevelopmentConfig)()
+    ProductionConfig
+    if env == "production"
+    else StagingConfig
+    if env == "staging"
+    else DevelopmentConfig
+  )()

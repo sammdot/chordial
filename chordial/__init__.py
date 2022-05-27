@@ -8,6 +8,7 @@ from chordial.api.auth import jwt, setup_auth
 from chordial.config import config_for
 from chordial.utils.uid import uid_converter
 
+
 def create_app(env):
   app = Flask(__name__)
   app.config.from_object(config_for(env))
@@ -22,5 +23,6 @@ def create_app(env):
   setup_auth(app)
 
   return app
+
 
 app = create_app(os.environ.get("CHORDIAL_ENV"))

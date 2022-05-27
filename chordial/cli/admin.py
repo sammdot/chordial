@@ -4,10 +4,12 @@ import sys
 from chordial.models import User
 from chordial.utils.database import connect
 
+
 @group("admin")
 @pass_obj
 def admin(ctx):
   ctx.engine, _ = connect(ctx.config.DATABASE_URL)
+
 
 @admin.command("ls")
 @pass_obj
@@ -17,6 +19,7 @@ def list_admins(ctx):
     print(admin)
   else:
     print(f"No admins.")
+
 
 @admin.command("grant")
 @argument("user", type=str)
@@ -31,6 +34,7 @@ def grant_admin(ctx, user):
       print(f"User {user} added to admin list.")
   else:
     print(f"User {user} not found", file=sys.stderr)
+
 
 @admin.command("revoke")
 @argument("user", type=str)

@@ -7,6 +7,7 @@ from multiprocessing import cpu_count
 from chordial import app
 from chordial.utils.logging import log, ChordialGunicornLogger
 
+
 class ChordialApp(BaseApplication):
   def __init__(self, options=None):
     self.options = options or {}
@@ -14,20 +15,26 @@ class ChordialApp(BaseApplication):
 
   def load_config(self):
     config = {
-      k: v for k, v in self.options.items()
-      if k in self.cfg.settings and v is not None}
+      k: v
+      for k, v in self.options.items()
+      if k in self.cfg.settings and v is not None
+    }
     for k, v in config.items():
       self.cfg.set(k.lower(), v)
 
   def load(self):
     return app
 
+
 @command("start")
 @option("--port", "-p", type=int, default=3241)
 @option("--workers", "-w", type=int, default=cpu_count() * 2 + 1)
-@option("--log-level", "-l",
+@option(
+  "--log-level",
+  "-l",
   type=Choice(["debug", "info", "warning", "error", "critical"]),
-  default=None)
+  default=None,
+)
 @pass_obj
 def start(ctx, port, workers, log_level):
   log_level = log_level or ctx.config.LOG_LEVEL.lower()
